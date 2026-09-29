@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAC0ALQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCefxDYWz/8fyBx2jJY/pQfFeoXA2WsGq3Pp8pUfma6aG48D6YoFppM0+O/lhR+tX7XxloEHH9hzRgejJWXuou7OLjj8W3x/caNsB6NNIT/ACq9b+D/ABldgGa7gtQe0cfP5muyHxI8MQj95bXEf1Kf/FVDN8XvB8GRvfPoCh/rTTQjGtfhfdT4N/q93KD1AfA/StrT/hZoUBDSW5lb1c5rNuvjh4bjX/R7S7mI9F/+tWFqPx3c5FjojD0Mr4q9RHqFl4P0a1UeXZQrj/ZrTj07T7WMuyxxovU4AArwGz+InxF8U6i9npV3ZWKY3FhFxGvqWNejabBPDCsFxe3+pXDD97M5JJPt0VR7CqjTlIlysdDqmvQRbrfTbZpJMDDgfqKwZ7OW53vezSSjkmOPp9C1Wi8FnE/yBMHPlg/qcVzGv+IiljkikOd27Zk5X6FRjHH+NXZR0Ju2aGpayNLt1Jsofs4b50RwzKf9oev51UtfiBoFxFKiQxwyIdpaWNtqH8jnOOg/SuLvtSukLtJciLyFZWdGbcifXow5HvyOtchZaVrPiu5newM8cUMe+ALIQ7xrjcTzySMnA6YPpUVKigryKhByeh6T4l8bWUlq0CzBvMVNkTKFAIbIYFeOeRyQQK5zxNfWGqKIrZEupwCGFv8AOQ390jGcDgBvzre0j4NW2mw3Wq32JUe1JWAEllaU46n0H4/NXqvhzwvpOmJLDDZW8QMh3tGgQLGcbs+vQAd+K5K2ZKMeWx0Qwd3e58xQfCXxNrK5vLKS0hOTsBAckgnr0H0o1f4B3FlpZawa9ub3cCJVBKoOWzwOSAP5V9fyWHmWzTXYh2CPbgcjJBA/Q4/4FTbYLBbnIPlvIDlhjcMYAA9PSvPljpp36HSsNGx8L264lo2wHqOu3HqAPbr9sPfrXc6hFZadGbmOJrraRiWM4YjHJGQ3avQhHlXKzlk+ZnGXXjBbXUv7NsdOjS4zteZ+cg9Cp9cdj36U251bVNBv5NYt7KO8N5IZYpnY7/AJup55+b+X0rmvGPiqZ47q3gsLe3kKlYmAOJMc5Oe2Diua0rxBqB8J3V9e3st2BIFjhlXbjjn/IFdkIqMNHuclSTctf6/I9E8JatqklxJPqFjhbhwRLCdoiXsfrjr39663QfifFqGpSWN00FvJHuCNuOR7n/AOsK8W0/xBqUWoTy36ZjWMKiIhCKAeSO3NaWr+JdOhvbLU9OtPJe4P7ws2VbI7ex/SnKDa0FGokeuWHxZ0GVr25lEVlc2s5FuwuY5N6epA6Y865Dxb4+ttQvriexnhjhnO6MqMnHQg88c9q8qW6RriWaQFpZHLyEn+I8n/6/41JY3N5F5V3M2YlPyoD1A9xXQqSirJGLqXZ0tp4muLi9u5J0Fg0xJiS3csVXsGJGSR04z9RVa38XXzXqWkl0kFoF/4+Ys7JD2OOua5C8utLl8Q+S7StJOpZQTxk9GHsK7bwja28e+LUmVAy8oR1A9B3qJp7IUXfVnr3hi8bU/COiTXFytxdXMEYlkHBZCuOfwPBHuK2/Ed5aaB4eu7tpI90K7Qh43nGcfXn8K8/wBF1ZdJ+IfhvU5GjWKCWWC4f0R8FiRjpgE/hXo3ikW3jfTfJZ7eAScRFmBDH6d8e1eZiIe9czezPBZvEF7fxPHI5gDqGJjPXP1/wA96y49SlEXnxl0jLlVbB6dOvc/lW34j8K3ek69e2U7fJay7Fwvy4XjA49ax5LGWGcm4lMhJ4bPQntgV1Ukkk2Y1FJ6GPqF9ck3LyHLjG3IGKxFufKO0tnB6dquajau0kgEhBOD8p6fjVaXTkX7RHMJAT06EH2P0r0FZoxakStcbLcvzkDg88/WpT4h1OGBhHd3AjHXaxH9ax3nAJA5I9RQsvT5uT9aTihOTRuaHr2radqNm9rMzLHKCVcbgVyM9fauf8AiZrN54g8SWt/fCJp2twGMaBATuJxgfWrNufMClujeoqn4ks5tNFm0+QZFLLz1HYio5pXIvzJ9z0/wHDDbeFY7QIXB3gg9tzdaKr/AArnEfhlIR/C5H/jxorCc3fRm1OKR//Z">
+<title>溫暖送餐 廣告捐款日報儀表板</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--color-background-primary:#ffffff;--color-background-secondary:#f5f5f4;--color-text-primary:#1c1917;--color-text-secondary:#78716c;--color-border-tertiary:#e7e5e4;--color-border-secondary:#d6d3d1;--border-radius-md:8px;--border-radius-lg:12px;--font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+@media(prefers-color-scheme:dark){:root{--color-background-primary:#1c1917;--color-background-secondary:#292524;--color-text-primary:#fafaf9;--color-text-secondary:#a8a29e;--color-border-tertiary:#44403c;--color-border-secondary:#57534e}}
+body{font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary);padding:1.5rem;max-width:1300px;margin:0 auto}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;gap:10px;flex-wrap:wrap}
+.page-title{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:flex;align-items:center;gap:6px;font-size:12px;padding:6px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-secondary);cursor:pointer;transition:background .15s;white-space:nowrap}
+.btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.btn-primary{background:#E1F5EE;color:#085041;border-color:#1D9E75}
+.btn-primary:hover{background:#c8eede}
+.upload-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1rem}
+.upload-zone{border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:1rem;text-align:center;cursor:pointer;transition:background .15s}
+.upload-zone:hover,.upload-zone.drag{background:var(--color-background-secondary)}
+.upload-zone.loaded{border-color:#1D9E75;border-style:solid}
+.up-icon{font-size:18px;color:var(--color-text-secondary);margin-bottom:4px}
+.up-title{font-size:11px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.up-sub{font-size:10px;color:var(--color-text-secondary)}
+.global-date{display:flex;align-items:center;gap:10px;padding:.75rem 1rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:1.5rem;font-size:12px;color:var(--color-text-secondary)}
+.global-date input[type=date]{font-size:12px;padding:3px 6px;border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)}
+.global-date label{font-weight:500;color:var(--color-text-primary);white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:2px 9px;border-radius:20px}
+.badge-meta{background:#E6EEF7;color:#0C447C}
+.badge-google{background:#FAEEDA;color:#633806}
+.badge-line{background:#E6F5EC;color:#065f46}
+.badge-total{background:#E1F5EE;color:#085041}
+.section-hd{display:flex;align-items:center;gap:8px;margin:1.25rem 0 10px}
+.metrics-grid-7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:1rem}
+.m-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px}
+.m-label{font-size:10px;color:var(--color-text-secondary);margin-bottom:4px;line-height:1.4}
+.m-val{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.m-sub{font-size:10px;color:var(--color-text-secondary);margin-top:2px}
+.divider{height:.5px;background:var(--color-border-tertiary);margin:1.25rem 0}
+.chart-card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.875rem 1rem;margin-bottom:1rem}
+.chart-legend{display:flex;gap:14px;margin-bottom:10px;font-size:11px;color:var(--color-text-secondary);flex-wrap:wrap}
+.chart-legend span{display:flex;align-items:center;gap:4px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:.5rem}
+.tbl th{font-size:11px;font-weight:500;color:var(--color-text-secondary);padding:5px 8px;border-bottom:.5px solid var(--color-border-tertiary);text-align:right;white-space:nowrap}
+.tbl th:first-child{text-align:left}
+.tbl td{padding:5px 8px;border-bottom:.5px solid var(--color-border-tertiary);color:var(--color-text-primary);text-align:right}
+.tbl td:first-child{text-align:left;color:var(--color-text-secondary)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl .tot td{font-weight:500;background:var(--color-background-secondary)}
+.tbl .der{color:var(--color-text-secondary)}
+.hint{font-size:11px;color:var(--color-text-secondary);padding:.75rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:1rem}
+.ad-wrap{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:auto;margin-bottom:.75rem}
+.ad-tbl{border-collapse:collapse;font-size:12px}
+.ad-tbl th{padding:6px 10px;font-size:11px;font-weight:500;color:var(--color-text-secondary);text-align:right;border-bottom:.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);white-space:nowrap;min-width:100px}
+.ad-tbl th.rh{text-align:left;position:sticky;left:0;background:var(--color-background-secondary);min-width:130px}
+.ad-tbl td{padding:6px 10px;border-bottom:.5px solid var(--color-border-tertiary);text-align:right;color:var(--color-text-primary);white-space:nowrap}
+.ad-tbl td.rh{text-align:left;font-weight:500;background:var(--color-background-primary);position:sticky;left:0;color:var(--color-text-primary)}
+.ad-tbl .tot td{font-weight:500;background:var(--color-background-secondary);border-top:.5px solid var(--color-border-secondary)}
+.ad-tbl .tot td.rh{background:var(--color-background-secondary)}
+.config-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:10px;background:#FAEEDA;color:#633806;margin-left:6px}
+.tab-bar{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tab-btn{font-size:11px;font-weight:500;padding:5px 14px;border-radius:20px;border:.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;transition:background .15s}
+.tab-btn:hover{background:var(--color-background-secondary)}
+.tab-btn.active-total{background:#E1F5EE;color:#085041;border-color:#1D9E75}
+.tab-btn.active-meta{background:#E6EEF7;color:#0C447C;border-color:#378ADD}
+.tab-btn.active-google{background:#FAEEDA;color:#633806;border-color:#BA7517}
+.tab-btn.active-line{background:#E6F5EC;color:#065f46;border-color:#1D9E75}
+.daily-sep{font-size:11px;font-weight:500;color:var(--color-text-secondary);margin:12px 0 8px;display:flex;align-items:center;gap:8px}
+.daily-sep::after{content:'';flex:1;height:.5px;background:var(--color-border-tertiary)}
+.camp-sep{font-size:11px;color:var(--color-text-secondary);margin:10px 0 6px;padding-left:2px}
+.multiselect-wrap{position:relative;display:inline-block;margin-bottom:14px}
+.multiselect-btn{display:flex;align-items:center;gap:8px;font-size:12px;padding:6px 12px;border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer;min-width:220px;justify-content:space-between}
+.multiselect-btn:hover{background:var(--color-background-secondary)}
+.multiselect-dropdown{position:absolute;top:calc(100% + 4px);left:0;min-width:220px;background:var(--color-background-primary);border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:100;display:none}
+.multiselect-dropdown.open{display:block}
+.multiselect-item{display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:12px;cursor:pointer;color:var(--color-text-primary)}
+.multiselect-item:hover{background:var(--color-background-secondary)}
+.multiselect-item input[type=checkbox]{accent-color:#378ADD;width:14px;height:14px;cursor:pointer}
+.selected-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.sel-tag{font-size:10px;padding:2px 7px;border-radius:10px;background:#E6EEF7;color:#0C447C}
+.src-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:4px 10px;border-radius:20px;background:var(--color-background-secondary);color:var(--color-text-secondary);border:.5px solid var(--color-border-secondary)}
+.src-badge.loaded{background:#E1F5EE;color:#085041;border-color:#1D9E75}
+.cacafly-logo{height:56px;position:fixed;top:12px;right:20px;z-index:1000}
+body{padding-top:80px}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="page-title"><i class="ti ti-chart-bar"></i> ［世界展望會］募集愛心 溫暖送餐｜廣告捐款成效儀表板</div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="top-actions">
+    <span class="src-badge" id="dz-xlsx"><i class="ti ti-table"></i> 捐款 <span id="sheets-status-don"></span></span>
+    <span class="src-badge" id="dz-meta"><i class="ti ti-brand-facebook"></i> Meta <span id="sheets-status-meta"></span></span>
+    <span class="src-badge" id="dz-goo"><i class="ti ti-brand-google"></i> Google <span id="sheets-status-goo"></span></span>
+    <span class="src-badge" id="dz-line"><i class="ti ti-message-circle"></i> LINE <span id="sheets-status-line"></span></span>
+    <button class="btn btn-primary" onclick="reloadAllSheets()" id="btn-reload"><i class="ti ti-refresh"></i> 重新抓取</button>
+  </div>
+    <img class="cacafly-logo" src="data:image/png;base64,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" alt="cacaFly">
+  </div>
+</div>
+<div style="display:none">
+  <span id="sub-xlsx"></span><span id="sub-meta"></span><span id="sub-goo"></span><span id="sub-line"></span>
+</div>
+
+<div class="global-date" id="date-bar" style="display:none">
+  <label><i class="ti ti-calendar" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>日期區間</label>
+  <input type="date" id="g-from"><span>—</span><input type="date" id="g-to">
+  <span id="date-hint" style="margin-left:4px;font-size:11px"></span>
+</div>
+
+<div id="dashboard"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+const C_SPEND='#888780',C_AMT='#BA7517',C_CNT='#633806';
+const SKIP=['專案目標','報表格式範例'];
+const WEEKDAYS=['日','一','二','三','四','五','六'];
+
+const DEFAULT_CONFIG={
+  meta:[
+    {label:'Consideration VC',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_consideration_vc'],utmIds:['120243319700390539']},
+    {label:'Action ATC',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_action_atc'],utmIds:['120243319595970539']},
+    {label:'Action Purchase',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_action_purchase'],utmIds:['120243316748250539']},
+  ],
+  google:[
+    {label:'Pmax',campNames:[],campNamePattern:'pmax',utmContents:['pmax']},
+    {label:'SEM品牌字',campNames:[],campNamePattern:'ccf_brand',utmContents:['brand']},
+    {label:'SEM產品字',campNames:[],campNamePattern:'ccf_product',utmContents:['meal']},
+    {label:'SEM需求字',campNames:[],campNamePattern:'ccf_generic',utmContents:['donation']},
+    {label:'SEM競品字',campNames:[],campNamePattern:'ccf_competitor',utmContents:['children','charity']},
+    {label:'Demandgen',campNames:[],campNamePattern:'dgc',utmContents:['dgc']},
+  ],
+  line:[{label:'action',utmSources:['line']}]
+};
+let CONFIG=JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+let charts=[],donWb=null,donRows=null,metaAdRows=null,gooAdRows=null,lineAdRows=null,daily=[];
+let currentAdTab='total';
+
+function parseConfig(wb){
+  const cfg={meta:[],google:[],line:[]};
+  ['Meta','Google','LINE'].forEach(sheet=>{
+    if(!wb.Sheets[sheet])return;
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[sheet],{defval:''});
+    const map={};
+    rows.forEach(r=>{
+      const label=String(r['活動標籤（顯示名稱）']||'').trim();if(!label)return;
+      const campRaw=String(r['廣告報表活動名稱（完整）']||r['utm_source 值']||'').trim();
+      const extra=String(r['utm_id']||r['utm_content 關鍵字']||'').trim();
+      if(sheet==='Meta'){if(!map[label])map[label]={label,campNames:[],utmIds:[]};map[label].campNames.push(...campRaw.split(',').map(s=>s.trim()).filter(Boolean));map[label].utmIds.push(...extra.split(',').map(s=>s.trim()).filter(Boolean));}
+      else if(sheet==='Google'){if(!map[label])map[label]={label,campNames:[],utmContents:[]};map[label].campNames.push(...campRaw.split(',').map(s=>s.trim()).filter(Boolean));map[label].utmContents.push(...extra.split(',').map(s=>s.trim()).filter(Boolean));}
+      else{if(!map[label])map[label]={label,utmSources:[]};map[label].utmSources.push(...campRaw.split(',').map(s=>s.trim()).filter(Boolean));}
+    });
+    cfg[sheet.toLowerCase()]=Object.values(map);
+  });
+  return cfg;
+}
+
+function parseSrc(p){const s=String(p||'');if(s.includes('utm_source=facebook'))return'facebook';if(s.includes('utm_source=google'))return'google';if(s.includes('utm_source=line'))return'line';return'other';}
+function rowDateIso(row){
+  const raw=row['訂單日期'];if(!raw)return null;
+  if(raw instanceof Date)return raw.getFullYear()+'-'+(raw.getMonth()+1).toString().padStart(2,'0')+'-'+raw.getDate().toString().padStart(2,'0');
+  if(typeof raw==='string'){const m=raw.match(/(\d{4})-(\d{2})-(\d{2})/);if(m)return m[0];const m2=raw.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);if(m2)return m2[1]+'-'+m2[2].padStart(2,'0')+'-'+m2[3].padStart(2,'0');}
+  if(typeof raw==='number'){const d=new Date(Math.round((raw-25569)*86400*1000));return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0');}
+  return null;
+}
+function isoDate(d){return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0');}
+
+// 日期標籤加星期：6/8(一)
+function dlWithWeek(iso){
+  const[y,m,d]=iso.split('-').map(Number);
+  const date=new Date(y,m-1,d);
+  const week=WEEKDAYS[date.getDay()];
+  return m+'/'+d+'('+week+')';
+}
+
+function fmt(n){if(n===null||n===undefined||isNaN(n)||n==='')return'—';return Math.round(n).toLocaleString();}
+function fmtD(n){if(!n||isNaN(n)||!isFinite(n))return'—';return'$'+Math.round(n).toLocaleString();}
+function pct(a,b){return b?((a/b)*100).toFixed(1)+'%':'—';}
+function fmtR(n){if(n===null||n===undefined||isNaN(n)||!isFinite(n))return'—';return n.toFixed(2);}
+function numVal(v){const n=parseFloat(String(v||'').replace(/,/g,''));return isNaN(n)?0:n;}
+function getRange(){return{from:document.getElementById('g-from').value,to:document.getElementById('g-to').value};}
+function validRow(r){const st=String(r['付款狀態']||'');return!st.includes('失敗')&&!st.includes('異常');}
+// 溫暖送餐認列：捐款科目 1080 且捐款名稱為「募集愛心 溫暖送餐」
+// （另有同名頁科目 7217 為國內緊急救援送餐，不列入本專案）
+// 捐款數量口徑開關：
+//   'item'  = 品項數（每一列算 1 筆）← 本波採用
+//   'unit'  = 份數（加總「捐款數量」欄，$10,000 的送餐＝2 份）← 上一波儀表板用的
+//   'order' = 訂單數（同一訂單編號的多個品項算 1 張）
+const DON_COUNT_MODE='unit';
+function countDon(rows){
+  if(DON_COUNT_MODE==='unit')return rows.reduce((s,r)=>s+(+r['捐款數量']||0),0);
+  if(DON_COUNT_MODE==='order')return new Set(rows.map(r=>r['訂單編號'])).size;
+  return rows.length;
+}
+function isMeal(r){return Number(r['捐款科目'])===1080&&String(r['捐款名稱']||'').includes('募集愛心 溫暖送餐');}
+
+function cleanMoney(v){const s=String(v||'').replace(/[^\d.-]/g,'');const n=parseFloat(s);return isNaN(n)?0:n;}
+function calcM(rows){
+  const valid=rows.filter(validRow);
+  const c5rows=valid.filter(isMeal);
+  const total=countDon(valid);
+  const c5=countDon(c5rows);
+  const amt=valid.reduce((s,r)=>s+cleanMoney(r['捐款總額']),0);
+  const a5=c5rows.reduce((s,r)=>s+cleanMoney(r['捐款總額']),0);
+  return{total,c5,nc5:total-c5,amt,a5};
+}
+function filtDaily(){const{from,to}=getRange();return daily.filter(d=>d.isoDate>=from&&d.isoDate<=to);}
+
+function matchMeta(row,camp){const p=String(row['來源參數']||'');if(!p.includes('utm_source=facebook'))return false;return camp.utmIds.some(id=>p.includes('utm_id='+id));}
+function matchGoogle(row,camp){const p=String(row['來源參數']||'');if(!p.includes('utm_source=google'))return false;const m=p.match(/utm_content=([^&]*)/);if(!m)return false;const c=m[1].toLowerCase();return camp.utmContents.some(kw=>c.includes(kw.toLowerCase()));}
+function matchLine(row){return String(row['來源參數']||'').includes('utm_source=line');}
+
+function adSpendBySource(from,to,src){
+  let s=0;
+  if((src==='meta'||src==='total')&&metaAdRows){const ns=CONFIG.meta.flatMap(c=>c.campNames);metaAdRows.filter(r=>{const dt=r['分析報告開始']||'';return dt>=from&&dt<=to&&ns.includes(r['行銷活動名稱']);}).forEach(r=>{s+=(+r['花費金額 (TWD)']||0);});}
+  if((src==='google'||src==='total')&&gooAdRows){gooAdRows.filter(r=>{const dt=r['日期']||'';if(dt<from||dt>to)return false;const name=String(r['廣告活動']||'');return CONFIG.google.some(c=>c.campNamePattern?name.toLowerCase().includes(c.campNamePattern):(c.campNames||[]).includes(name));}).forEach(r=>{s+=numVal(r['費用']);});}
+  if((src==='line'||src==='total')&&lineAdRows){lineAdRows.filter(r=>{const dt=r['_dayIso']||'';return dt>=from&&dt<=to;}).forEach(r=>{s+=numVal(r['Cost']);});}
+  return s;
+}
+function adByDay(iso,src,field){
+  let s=0;
+  const metaField={'spend':'花費金額 (TWD)','click':'連結點擊次數','atc':'加到購物車次數','purch':'購買次數','convv':'轉換價值'};
+  const gooField={'spend':'費用','click':'點擊','atc':'ATC-點擊送餐按鈕','purch':'Purchase-完成捐款','convv':'轉換價值'};
+  const lineField={'spend':'Cost','click':'Clicks','atc':'AddToCart','purch':'Purchase','convv':'ConvValue'};
+  if((src==='meta'||src==='total')&&metaAdRows){const ns=CONFIG.meta.flatMap(c=>c.campNames);metaAdRows.filter(r=>r['分析報告開始']===iso&&ns.includes(r['行銷活動名稱'])).forEach(r=>{s+=numVal(r[metaField[field]]);});}
+  if((src==='google'||src==='total')&&gooAdRows){gooAdRows.filter(r=>{if(r['日期']!==iso)return false;const name=String(r['廣告活動']||'');return CONFIG.google.some(c=>c.campNamePattern?name.toLowerCase().includes(c.campNamePattern):(c.campNames||[]).includes(name));}).forEach(r=>{s+=numVal(r[gooField[field]]);});}
+  if((src==='line'||src==='total')&&lineAdRows){lineAdRows.filter(r=>r['_dayIso']===iso).forEach(r=>{s+=numVal(r[lineField[field]]);});}
+  return s;
+}
+function adSpendByDay(iso,src){return adByDay(iso,src,'spend');}
+
+// 按活動取每日廣告數據
+function adCampByDay(iso,camp,src){
+  const campNames=camp.campNames||[];
+  let spend=0,click=0,atc=0,purch=0,convv=0;
+  if(src==='meta'&&metaAdRows){metaAdRows.filter(r=>r['分析報告開始']===iso&&campNames.includes(r['行銷活動名稱'])).forEach(r=>{spend+=numVal(r['花費金額 (TWD)']);click+=numVal(r['連結點擊次數']);atc+=numVal(r['加到購物車次數']);purch+=numVal(r['購買次數']);convv+=numVal(r['轉換價值']);});}
+  if(src==='google'&&gooAdRows){gooAdRows.filter(r=>{if(r['日期']!==iso)return false;const name=String(r['廣告活動']||'');return camp.campNamePattern?name.toLowerCase().includes(camp.campNamePattern):campNames.includes(name);}).forEach(r=>{spend+=numVal(r['費用']);click+=numVal(r['點擊']);atc+=numVal(r['ATC-點擊送餐按鈕']);purch+=numVal(r['Purchase-完成捐款']);convv+=numVal(r['轉換價值']);});}
+  if(src==='line'&&lineAdRows){lineAdRows.filter(r=>r['_dayIso']===iso).forEach(r=>{spend+=numVal(r['Cost']);click+=numVal(r['Clicks']);atc+=numVal(r['AddToCart']);purch+=numVal(r['Purchase']);});}
+  return{spend,click,atc,purch,convv};
+}
+
+function mcards7(m,spendVal){
+  const donRoas=(spendVal>0)?m.amt/spendVal:null;
+  const mealRoas=(spendVal>0)?m.a5/spendVal:null;
+  return`<div class="metrics-grid-7">
+    <div class="m-card"><div class="m-label">廣告花費</div><div class="m-val">${spendVal!==null?'$'+fmt(spendVal):'—'}</div><div class="m-sub">TWD</div></div>
+    <div class="m-card"><div class="m-label">整體捐款數量</div><div class="m-val">${fmt(m.total)}</div><div class="m-sub">份</div></div>
+    <div class="m-card"><div class="m-label">溫暖送餐 / 非溫暖送餐</div><div class="m-val">${fmt(m.c5)} <span style="font-size:12px;color:var(--color-text-secondary)">/ ${fmt(m.nc5)}</span></div><div class="m-sub">份</div></div>
+    <div class="m-card"><div class="m-label">捐款總額</div><div class="m-val">$${fmt(m.amt)}</div><div class="m-sub">元</div></div>
+    <div class="m-card"><div class="m-label">溫暖送餐總額</div><div class="m-val">$${fmt(m.a5)}</div><div class="m-sub">${pct(m.a5,m.amt)} 佔比</div></div>
+    <div class="m-card"><div class="m-label">捐款ROAS</div><div class="m-val">${fmtR(donRoas)}</div><div class="m-sub">捐款總額／花費</div></div>
+    <div class="m-card"><div class="m-label">溫暖送餐ROAS</div><div class="m-val">${fmtR(mealRoas)}</div><div class="m-sub">溫暖送餐總額／花費</div></div>
+  </div>`;
+}
+function comboChartHTML(id){
+  return`<div class="chart-card">
+    <div class="chart-legend">
+      <span><span style="width:10px;height:10px;border-radius:2px;background:${C_SPEND};display:inline-block"></span>廣告花費</span>
+      <span><span style="width:10px;height:10px;border-radius:2px;background:${C_AMT};display:inline-block"></span>捐款總額</span>
+      <span style="display:flex;align-items:center;gap:3px"><span style="width:16px;height:2px;background:${C_CNT};display:inline-block"></span><span style="width:6px;height:6px;border-radius:50%;background:${C_CNT};display:inline-block;margin-left:-4px"></span>捐款數量</span>
+    </div>
+    <div style="position:relative;height:200px"><canvas id="${id}"></canvas></div>
+  </div>`;
+}
+function mkComboChart(id,labels,spendData,amtData,cntData){
+  const ctx=document.getElementById(id);if(!ctx)return;
+  const isDark=matchMedia('(prefers-color-scheme:dark)').matches;
+  const gridC=isDark?'rgba(255,255,255,.07)':'rgba(0,0,0,.06)';const tickC=isDark?'#999':'#888';
+  const c=new Chart(ctx,{type:'bar',data:{labels,datasets:[
+    {label:'廣告花費',type:'bar',data:spendData,backgroundColor:C_SPEND,borderRadius:3,yAxisID:'y',order:2},
+    {label:'捐款總額',type:'bar',data:amtData,backgroundColor:C_AMT,borderRadius:3,yAxisID:'y',order:2},
+    {label:'捐款數量',type:'line',data:cntData,borderColor:C_CNT,backgroundColor:C_CNT,borderWidth:2,pointRadius:4,pointBackgroundColor:C_CNT,tension:0.3,yAxisID:'y2',order:1},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:{display:false},ticks:{color:tickC,font:{size:10},autoSkip:false,maxRotation:0}},
+      y:{position:'left',grid:{color:gridC},ticks:{color:tickC,font:{size:10},callback:v=>'$'+(v>=1000?(v/1000).toFixed(0)+'K':v)}},
+      y2:{position:'right',grid:{display:false},ticks:{color:C_CNT,font:{size:10}}}}}});
+  charts.push(c);
+}
+
+function platformTable(key,src){
+  const filt=filtDaily();
+  if(!filt.length)return`<p style="font-size:12px;color:var(--color-text-secondary);padding:.5rem 0">此區間無資料</p>`;
+  const hasAd=src==='meta'?!!metaAdRows:src==='google'?!!gooAdRows:src==='line'?!!lineAdRows:!!(metaAdRows||gooAdRows||lineAdRows);
+  const T={total:0,c5:0,nc5:0,amt:0,a5:0,spend:0};
+  const rows=filt.map(d=>{
+    let m;
+    if(key==='total')m={total:d.meta.total+d.google.total+d.line.total,c5:d.meta.c5+d.google.c5+d.line.c5,nc5:d.meta.nc5+d.google.nc5+d.line.nc5,amt:d.meta.amt+d.google.amt+d.line.amt,a5:d.meta.a5+d.google.a5+d.line.a5};
+    else m=d[key];
+    const spend=hasAd?adSpendByDay(d.isoDate,src):null;
+    const donRoas=(spend>0)?m.amt/spend:null;const mealRoas=(spend>0)?m.a5/spend:null;
+    T.total+=m.total;T.c5+=m.c5;T.nc5+=m.nc5;T.amt+=m.amt;T.a5+=m.a5;if(spend)T.spend+=spend;
+    const sc=hasAd?`<td>$${fmt(spend)}</td>`:'';
+    const cpa=hasAd?`<td class="der">${fmtR(donRoas)}</td><td class="der">${fmtR(mealRoas)}</td>`:'';
+    return`<tr><td>${dlWithWeek(d.isoDate)}</td>${sc}<td>${fmt(m.total)}</td><td>${fmt(m.c5)} / ${fmt(m.nc5)}</td><td>$${fmt(m.amt)}</td><td>$${fmt(m.a5)}</td>${cpa}</tr>`;
+  }).join('');
+  const tRcp=(hasAd&&T.spend>0)?T.amt/T.spend:null,tCcp=(hasAd&&T.spend>0)?T.a5/T.spend:null;
+  const tsc=hasAd?`<td>$${fmt(T.spend)}</td>`:'';const tcpa=hasAd?`<td class="der">${fmtR(tRcp)}</td><td class="der">${fmtR(tCcp)}</td>`:'';
+  const shds=hasAd?`<th>廣告花費</th>`:'';const chds=hasAd?`<th>捐款ROAS</th><th>溫暖送餐ROAS</th>`:'';
+  return`<table class="tbl"><thead><tr><th>日期</th>${shds}<th>捐款數量</th><th>溫暖送餐 / 非溫暖送餐</th><th>捐款總額</th><th>溫暖送餐總額</th>${chds}</tr></thead>
+    <tbody>${rows}<tr class="tot"><td>合計</td>${tsc}<td>${fmt(T.total)}</td><td>${fmt(T.c5)} / ${fmt(T.nc5)}</td><td>$${fmt(T.amt)}</td><td>$${fmt(T.a5)}</td>${tcpa}</tr></tbody></table>`;
+}
+
+function campStats(spend,click,atc,purch,donRows,convv){
+  const valid=donRows.filter(validRow);
+  const c5rows=valid.filter(isMeal);
+  const donTotal=countDon(valid);
+  const donC5=countDon(c5rows);
+  const donAmt=valid.reduce((s,r)=>s+cleanMoney(r['捐款總額']),0);
+  const donA5=c5rows.reduce((s,r)=>s+cleanMoney(r['捐款總額']),0);
+  return{spend,click,atc,purch,convv:convv||0,cpc:click>0?spend/click:null,cpatc:atc>0?spend/atc:null,cpurch:purch>0?spend/purch:null,
+    convRoas:spend>0?(convv||0)/spend:null,
+    donTotal,donC5,donAmt,donA5,donRoas:spend>0?donAmt/spend:null,mealRoas:spend>0?donA5/spend:null};
+}
+
+// 前段時間比較用工具
+function getPrevRange(from,to){
+  const f=new Date(from+'T00:00:00'),t=new Date(to+'T00:00:00');
+  const days=Math.round((t-f)/86400000)+1;
+  const pTo=new Date(f.getTime()-86400000);
+  const pFrom=new Date(pTo.getTime()-(days-1)*86400000);
+  return{pfrom:isoDate(pFrom),pto:isoDate(pTo)};
+}
+function pctChange(cur,prev){
+  if(prev===null||prev===undefined||!isFinite(prev)||prev===0)return null;
+  if(cur===null||cur===undefined||!isFinite(cur))return null;
+  return(cur-prev)/prev*100;
+}
+const COST_FIELDS=['cpc','cpatc','cpurch'];          // 越低越好（漲=紅）
+const ROAS_FIELDS=['convRoas','donRoas','mealRoas'];  // 越高越好（漲=綠）
+function pctBadge(field,cur,prev){
+  const p=pctChange(cur,prev);
+  if(p===null||p===undefined||!isFinite(p))return'';
+  const sign=p>0?'+':'';
+  const val=Math.abs(p)<10?p.toFixed(1):Math.round(p);
+  let color='var(--color-text-tertiary,#9ca3af)';
+  if(COST_FIELDS.includes(field)){color=p>0?'#c0392b':(p<0?'#1D9E75':color);}
+  else if(ROAS_FIELDS.includes(field)){color=p>0?'#1D9E75':(p<0?'#c0392b':color);}
+  return` <span style="font-size:10px;color:${color}">${sign}${val}%</span>`;
+}
+
+const AD_GRP_HD=`<tr><th class="rh"></th><th colspan="7" style="text-align:center;font-size:10px;letter-spacing:.04em;border-left:.5px solid var(--color-border-secondary)">廣告系統數據</th><th colspan="6" style="text-align:center;font-size:10px;letter-spacing:.04em;border-left:.5px solid var(--color-border-secondary)">實際捐款數據</th></tr>`;
+const AD_COL_HD_CAMP=`<tr><th class="rh">廣告活動</th><th style="border-left:.5px solid var(--color-border-secondary)">花費 (TWD)</th><th>點擊</th><th>點擊送餐按鈕</th><th>完成捐款</th><th>CPC</th><th>每次點擊送餐按鈕成本</th><th>轉換ROAS</th><th style="border-left:.5px solid var(--color-border-secondary)">捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th><th>捐款ROAS</th><th>溫暖送餐ROAS</th></tr>`;
+const AD_COL_HD_DATE=`<tr><th class="rh">日期</th><th style="border-left:.5px solid var(--color-border-secondary)">花費 (TWD)</th><th>點擊</th><th>點擊送餐按鈕</th><th>完成捐款</th><th>CPC</th><th>每次點擊送餐按鈕成本</th><th>轉換ROAS</th><th style="border-left:.5px solid var(--color-border-secondary)">捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th><th>捐款ROAS</th><th>溫暖送餐ROAS</th></tr>`;
+
+function adRow(r,isTot,showCompare){
+  const p=r.prev;
+  const b=field=>(showCompare&&p)?pctBadge(field,r[field],p[field]):'';
+  return`<tr${isTot?' class="tot"':''}><td class="rh"${isTot?' style="background:var(--color-background-secondary)"':''}>${r.label}</td><td style="border-left:.5px solid var(--color-border-secondary)">$${fmt(r.spend)}${b('spend')}</td><td>${fmt(r.click)}${b('click')}</td><td>${fmt(r.atc)}${b('atc')}</td><td>${fmt(r.purch)}${b('purch')}</td><td style="color:var(--color-text-secondary)">${fmtD(r.cpc)}${b('cpc')}</td><td style="color:var(--color-text-secondary)">${fmtD(r.cpatc)}${b('cpatc')}</td><td style="color:var(--color-text-secondary)">${fmtR(r.convRoas)}${b('convRoas')}</td><td style="border-left:.5px solid var(--color-border-secondary)">${fmt(r.donTotal)}${b('donTotal')}</td><td>${fmt(r.donC5)}${b('donC5')}</td><td>$${fmt(r.donAmt)}${b('donAmt')}</td><td>$${fmt(r.donA5)}${b('donA5')}</td><td style="color:var(--color-text-secondary)">${fmtR(r.donRoas)}${b('donRoas')}</td><td style="color:var(--color-text-secondary)">${fmtR(r.mealRoas)}${b('mealRoas')}</td></tr>`;
+}
+
+function totRow(rows){
+  const S=f=>rows.reduce((s,r)=>s+(typeof r[f]==='number'&&r[f]!==null?r[f]:0),0);
+  const Sp=f=>rows.reduce((s,r)=>s+(r.prev&&typeof r.prev[f]==='number'&&r.prev[f]!==null?r.prev[f]:0),0);
+  const tS=S('spend'),tCl=S('click'),tAt=S('atc'),tPu=S('purch'),tCv=S('convv'),tDn=S('donTotal'),tC5=S('donC5'),tAm=S('donAmt'),tA5=S('donA5');
+  const out={label:'合計',spend:tS,click:tCl,atc:tAt,purch:tPu,convv:tCv,cpc:tCl>0?tS/tCl:null,cpatc:tAt>0?tS/tAt:null,cpurch:tPu>0?tS/tPu:null,convRoas:tS>0?tCv/tS:null,donTotal:tDn,donC5:tC5,donAmt:tAm,donA5:tA5,donRoas:tS>0?tAm/tS:null,mealRoas:tS>0?tA5/tS:null};
+  if(rows.some(r=>r.prev)){
+    const pS=Sp('spend'),pCl=Sp('click'),pAt=Sp('atc'),pPu=Sp('purch'),pCv=Sp('convv'),pDn=Sp('donTotal'),pC5=Sp('donC5'),pAm=Sp('donAmt'),pA5=Sp('donA5');
+    out.prev={spend:pS,click:pCl,atc:pAt,purch:pPu,convv:pCv,cpc:pCl>0?pS/pCl:null,cpatc:pAt>0?pS/pAt:null,cpurch:pPu>0?pS/pPu:null,convRoas:pS>0?pCv/pS:null,donTotal:pDn,donC5:pC5,donAmt:pAm,donA5:pA5,donRoas:pS>0?pAm/pS:null,mealRoas:pS>0?pA5/pS:null};
+  }
+  return out;
+}
+
+function buildCampTable(campRows){
+  const tot=totRow(campRows);
+  const body=[...campRows,tot].map((r,i,arr)=>adRow(r,i===arr.length-1,true)).join('');
+  return`<div class="ad-wrap"><table class="ad-tbl"><thead>${AD_GRP_HD}${AD_COL_HD_CAMP}</thead><tbody>${body}</tbody></table></div>`;
+}
+
+function buildDailyTable(dailyRows){
+  const tot=totRow(dailyRows);
+  const body=[...dailyRows,tot].map((r,i,arr)=>adRow(r,i===arr.length-1)).join('');
+  return`<div class="ad-wrap"><table class="ad-tbl"><thead>${AD_GRP_HD}${AD_COL_HD_DATE}</thead><tbody>${body}</tbody></table></div>`;
+}
+
+function getDailyStats(filt,src,donFilter){
+  return filt.map(d=>{
+    const spend=adByDay(d.isoDate,src,'spend');
+    const click=adByDay(d.isoDate,src,'click');
+    const atc=adByDay(d.isoDate,src,'atc');
+    const purch=adByDay(d.isoDate,src,'purch');
+    const convv=adByDay(d.isoDate,src,'convv');
+    const donRows=d.allRows.filter(donFilter);
+    const dm=calcM(donRows);
+    return{label:dlWithWeek(d.isoDate),spend,click,atc,purch,convv,cpc:click>0?spend/click:null,cpatc:atc>0?spend/atc:null,cpurch:purch>0?spend/purch:null,
+      convRoas:spend>0?convv/spend:null,
+      donTotal:dm.total,donC5:dm.c5,donAmt:dm.amt,donA5:dm.a5,donRoas:spend>0?dm.amt/spend:null,mealRoas:spend>0?dm.a5/spend:null};
+  });
+}
+
+function getCampDailyStats(filt,src,camp,donFilter){
+  return filt.map(d=>{
+    const ad=adCampByDay(d.isoDate,camp,src);
+    const donRows=d.allRows.filter(r=>donFilter(r,camp));
+    const dm=calcM(donRows);
+    return{label:dlWithWeek(d.isoDate),spend:ad.spend,click:ad.click,atc:ad.atc,purch:ad.purch,convv:ad.convv||0,
+      cpc:ad.click>0?ad.spend/ad.click:null,cpatc:ad.atc>0?ad.spend/ad.atc:null,cpurch:ad.purch>0?ad.spend/ad.purch:null,
+      convRoas:ad.spend>0?(ad.convv||0)/ad.spend:null,
+      donTotal:dm.total,donC5:dm.c5,donAmt:dm.amt,donA5:dm.a5,donRoas:ad.spend>0?dm.amt/ad.spend:null,mealRoas:ad.spend>0?dm.a5/ad.spend:null};
+  });
+}
+
+// 標準化 TA/SP：統一轉成兩位數 TA01, SP01
+function normalizeTA(s){if(!s)return null;const m=String(s).match(/TA(\d+)/i);if(!m)return null;return'TA'+m[1].padStart(2,'0');}
+function normalizeSP(s){if(!s)return null;const m=String(s).match(/SP(\d+)(-\d+)?/i);if(!m)return null;return'SP'+m[1].padStart(2,'0')+(m[2]||'');}
+
+function parseTA(utmContent){return normalizeTA(utmContent);}
+function parseSP(utmContent){return normalizeSP(utmContent);}
+function getUtmContent(row){const p=String(row['來源參數']||'');const m=p.match(/utm_content=([^&]*)/);return m?m[1]:'';}
+
+// 從廣告報表廣告組合名稱/廣告名稱解析 TA/SP（同樣標準化）
+function parseTAFromAdset(name){return normalizeTA(name);}
+function parseSPFromAd(name){return normalizeSP(name);}
+
+function buildAudienceTable(filtAd,allDon,selectedCamps,cfg){
+  // 收集所有 TA
+  const taSet=new Set();
+  filtAd.forEach(r=>{const ta=parseTAFromAdset(r['廣告組合名稱']);if(ta)taSet.add(ta);});
+  allDon.forEach(r=>{const ta=parseTA(getUtmContent(r));if(ta)taSet.add(ta);});
+  const tas=[...taSet].sort();
+  if(!tas.length)return'';
+
+  // 過濾選中活動
+  const selCampNames=cfg.filter(c=>selectedCamps.includes(c.label)).flatMap(c=>c.campNames);
+
+  const rows=tas.map(ta=>{
+    const ca=filtAd.filter(r=>selCampNames.includes(r['行銷活動名稱'])&&parseTAFromAdset(r['廣告組合名稱'])===ta);
+    const don=allDon.filter(r=>{
+      if(!selectedCamps.length)return false;
+      const p=String(r['來源參數']||'');
+      if(!p.includes('utm_source=facebook'))return false;
+      const inCamp=cfg.filter(c=>selectedCamps.includes(c.label)).some(c=>c.utmIds.some(id=>p.includes('utm_id='+id)));
+      return inCamp&&parseTA(getUtmContent(r))===ta;
+    });
+    const spend=ca.reduce((s,r)=>s+(+r['花費金額 (TWD)']||0),0);
+    const click=ca.reduce((s,r)=>s+(+r['連結點擊次數']||0),0);
+    const atc=ca.reduce((s,r)=>s+(+r['加到購物車次數']||0),0);
+    const purch=ca.reduce((s,r)=>s+(+r['購買次數']||0),0);
+    return{label:ta,...campStats(spend,click,atc,purch,don)};
+  });
+  return buildCampTable(rows);
+}
+
+function buildCreativeTable(filtAd,allDon,selectedCamps,cfg,selectedTA){
+  const selCampNames=cfg.filter(c=>selectedCamps.includes(c.label)).flatMap(c=>c.campNames);
+  // 若選了特定 TA，廣告資料只看該 TA 的廣告組合
+  const filtAdTA=selectedTA?filtAd.filter(r=>parseTAFromAdset(r['廣告組合名稱'])===selectedTA):filtAd;
+
+  const spSet=new Set();
+  filtAdTA.forEach(r=>{const sp=parseSPFromAd(r['廣告名稱']);if(sp)spSet.add(sp);});
+  allDon.forEach(r=>{
+    const uc=getUtmContent(r);const sp=parseSP(uc);if(!sp)return;
+    if(selectedTA&&parseTA(uc)!==selectedTA)return;
+    spSet.add(sp);
+  });
+  const sps=[...spSet].sort();
+  if(!sps.length)return'';
+
+  const rows=sps.map(sp=>{
+    const ca=filtAdTA.filter(r=>selCampNames.includes(r['行銷活動名稱'])&&parseSPFromAd(r['廣告名稱'])===sp);
+    const don=allDon.filter(r=>{
+      if(!selectedCamps.length)return false;
+      const p=String(r['來源參數']||'');
+      if(!p.includes('utm_source=facebook'))return false;
+      const inCamp=cfg.filter(c=>selectedCamps.includes(c.label)).some(c=>c.utmIds.some(id=>p.includes('utm_id='+id)));
+      const uc=getUtmContent(r);
+      return inCamp&&parseSP(uc)===sp&&(selectedTA?parseTA(uc)===selectedTA:true);
+    });
+    const spend=ca.reduce((s,r)=>s+(+r['花費金額 (TWD)']||0),0);
+    const click=ca.reduce((s,r)=>s+(+r['連結點擊次數']||0),0);
+    const atc=ca.reduce((s,r)=>s+(+r['加到購物車次數']||0),0);
+    const purch=ca.reduce((s,r)=>s+(+r['購買次數']||0),0);
+    return{label:sp,...campStats(spend,click,atc,purch,don)};
+  });
+  return buildCampTable(rows);
+}
+
+// Meta 選中活動的每日明細（合併）
+function buildSelectedCampDaily(filt,filtAd,allDon,selectedCamps,cfg){
+  const selCampNames=cfg.filter(c=>selectedCamps.includes(c.label)).flatMap(c=>c.campNames);
+  return filt.map(d=>{
+    const ca=filtAd.filter(r=>selCampNames.includes(r['行銷活動名稱'])&&r['分析報告開始']===d.isoDate);
+    const don=d.allRows.filter(r=>{
+      const p=String(r['來源參數']||'');
+      if(!p.includes('utm_source=facebook'))return false;
+      return cfg.filter(c=>selectedCamps.includes(c.label)).some(c=>c.utmIds.some(id=>p.includes('utm_id='+id)));
+    });
+    const spend=ca.reduce((s,r)=>s+(+r['花費金額 (TWD)']||0),0);
+    const click=ca.reduce((s,r)=>s+(+r['連結點擊次數']||0),0);
+    const atc=ca.reduce((s,r)=>s+(+r['加到購物車次數']||0),0);
+    const purch=ca.reduce((s,r)=>s+(+r['購買次數']||0),0);
+    const dm=calcM(don);
+    const convv=ca.reduce((s,r)=>s+(+r['轉換價值']||0),0);
+    return{label:d.label,spend,click,atc,purch,convv,cpc:click>0?spend/click:null,cpatc:atc>0?spend/atc:null,cpurch:purch>0?spend/purch:null,
+      convRoas:spend>0?convv/spend:null,
+      donTotal:dm.total,donC5:dm.c5,donAmt:dm.amt,donA5:dm.a5,donRoas:spend>0?dm.amt/spend:null,mealRoas:spend>0?dm.a5/spend:null};
+  });
+}
+
+// 全域儲存 meta 選中狀態
+let metaSelectedCamps=[];
+let metaSelectedTA=null;
+function selectMetaTA(ta){metaSelectedTA=ta;renderMetaDetail();}
+
+function renderMetaDetail(){
+  const el=document.getElementById('meta-detail-section');
+  if(!el)return;
+  const{from,to}=getRange();
+  const filt=filtDaily();
+  const filtDates=new Set(filt.map(d=>d.isoDate));
+  const allDon=daily.filter(d=>filtDates.has(d.isoDate)).flatMap(d=>d.allRows);
+  const filtAd=metaAdRows?metaAdRows.filter(r=>{const dt=r['分析報告開始']||'';return dt>=from&&dt<=to;}):[];
+  const cfg=CONFIG.meta;
+  const sel=metaSelectedCamps.length?metaSelectedCamps:cfg.map(c=>c.label);
+
+  // 更新 tag 顯示
+  const tagEl=document.getElementById('meta-sel-tags');
+  if(tagEl)tagEl.innerHTML=sel.map(s=>`<span class="sel-tag">${s}</span>`).join('');
+
+  let html='';
+  // 每日明細（選中活動合併）
+  html+=`<div class="daily-sep">分活動每日明細</div>`;
+  const selDaily=buildSelectedCampDaily(filt,filtAd,allDon,sel,cfg);
+  html+=buildDailyTable(selDaily);
+  // 受眾明細
+  html+=`<div class="daily-sep">受眾明細</div>`;
+  html+=buildAudienceTable(filtAd,allDon,sel,cfg)||'<p style="font-size:12px;color:var(--color-text-secondary);padding:.5rem 0">無受眾數據</p>';
+  // 素材明細
+  html+=`<div class="daily-sep">素材明細</div>`;
+  // TA 篩選按鈕
+  const taSet2=new Set();
+  filtAd.forEach(r=>{const ta=parseTAFromAdset(r['廣告組合名稱']);if(ta)taSet2.add(ta);});
+  const availTAs=[...taSet2].sort();
+  if(availTAs.length){
+    const taBtns=['全部',...availTAs].map(ta=>{
+      const active=ta==='全部'?!metaSelectedTA:metaSelectedTA===ta;
+      const val=ta==='全部'?'null':`'${ta}'`;
+      return`<button class="tab-btn${active?' active-meta':''}" onclick="selectMetaTA(${val})">${ta}</button>`;
+    }).join('');
+    html+=`<div class="tab-bar">${taBtns}</div>`;
+  }
+  html+=buildCreativeTable(filtAd,allDon,sel,cfg,metaSelectedTA)||'<p style="font-size:12px;color:var(--color-text-secondary);padding:.5rem 0">無素材數據</p>';
+  el.innerHTML=html;
+}
+
+function toggleMetaDropdown(){
+  const dd=document.getElementById('meta-camp-dropdown');
+  if(dd)dd.classList.toggle('open');
+}
+function toggleMetaCamp(label){
+  if(metaSelectedCamps.includes(label)){metaSelectedCamps=metaSelectedCamps.filter(l=>l!==label);}
+  else{metaSelectedCamps.push(label);}
+  // 更新 checkbox UI
+  const cb=document.getElementById('cb-'+label.replace(/ /g,'_'));
+  if(cb)cb.checked=metaSelectedCamps.includes(label);
+  renderMetaDetail();
+  // 更新按鈕文字
+  const btn=document.getElementById('meta-camp-btn-label');
+  if(btn){
+    const sel=metaSelectedCamps.length?metaSelectedCamps:CONFIG.meta.map(c=>c.label);
+    btn.textContent=metaSelectedCamps.length===0?'全部活動':sel.join('、');
+  }
+}
+// 點外部關閉下拉
+document.addEventListener('click',e=>{
+  const wrap=document.getElementById('meta-camp-multiselect');
+  if(wrap&&!wrap.contains(e.target)){const dd=document.getElementById('meta-camp-dropdown');if(dd)dd.classList.remove('open');}
+});
+
+function aggCampStats(src,camp,filtAd,allDonRows,campDonFilter){
+  const campKey=src==='meta'?'行銷活動名稱':'廣告活動';const ca=src==='line'?filtAd:(camp.campNamePattern?filtAd.filter(r=>String(r[campKey]||'').toLowerCase().includes(camp.campNamePattern)):filtAd.filter(r=>(camp.campNames||[]).includes(r[campKey])));
+  const don=allDonRows.filter(r=>campDonFilter(r,camp));
+  const spend=src==='meta'?ca.reduce((s,r)=>s+(+r['花費金額 (TWD)']||0),0):src==='google'?ca.reduce((s,r)=>s+numVal(r['費用']),0):filtAd.reduce((s,r)=>s+numVal(r['Cost']),0);
+  const click=src==='meta'?ca.reduce((s,r)=>s+(+r['連結點擊次數']||0),0):src==='google'?ca.reduce((s,r)=>s+numVal(r['點擊']),0):filtAd.reduce((s,r)=>s+numVal(r['Clicks']),0);
+  const atc=src==='meta'?ca.reduce((s,r)=>s+(+r['加到購物車次數']||0),0):src==='google'?ca.reduce((s,r)=>s+numVal(r['ATC-點擊送餐按鈕']),0):filtAd.reduce((s,r)=>s+numVal(r['AddToCart']),0);
+  const purch=src==='meta'?ca.reduce((s,r)=>s+(+r['購買次數']||0),0):src==='google'?ca.reduce((s,r)=>s+numVal(r['Purchase-完成捐款']),0):filtAd.reduce((s,r)=>s+numVal(r['Purchase']),0);
+  const convv=src==='meta'?ca.reduce((s,r)=>s+(+r['轉換價值']||0),0):src==='google'?ca.reduce((s,r)=>s+numVal(r['轉換價值']),0):0;
+  return campStats(spend,click,atc,purch,don,convv);
+}
+
+function buildMediaSection(src,cfg,adRows,filtAd,allDon,filt,donFilter,campDonFilter,prevFiltAd,prevAllDon){
+  if(!adRows)return`<div class="hint"><i class="ti ti-info-circle" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>上傳廣告成效檔案後顯示整合表</div>`;
+  // 廣告活動總表
+  const campRows=cfg.map(camp=>{
+    const cur=aggCampStats(src,camp,filtAd,allDon,campDonFilter);
+    const prev=prevFiltAd?aggCampStats(src,camp,prevFiltAd,prevAllDon||[],campDonFilter):null;
+    return{label:camp.label,...cur,prev};
+  });
+  let html=buildCampTable(campRows);
+  // 每日整體明細
+  const dailyAll=getDailyStats(filt,src,donFilter);
+  html+=`<div class="daily-sep">每日明細</div>`;
+  html+=buildDailyTable(dailyAll);
+  // 分活動每日明細 + 受眾 + 素材（僅 meta）
+  if(src==='meta'){
+    // 多選下拉
+    const campLabels=cfg.map(c=>c.label);
+    const checkboxes=campLabels.map(l=>`<label class="multiselect-item"><input type="checkbox" id="cb-${l.replace(/ /g,'_')}" ${metaSelectedCamps.length===0||metaSelectedCamps.includes(l)?'checked':''} onchange="toggleMetaCamp('${l}')"> ${l}</label>`).join('');
+    const selLabel=metaSelectedCamps.length===0?'全部活動':metaSelectedCamps.join('、');
+    html+=`<div class="daily-sep">分活動每日明細</div>
+    <div id="meta-camp-multiselect" class="multiselect-wrap">
+      <button class="multiselect-btn" onclick="toggleMetaDropdown()">
+        <span id="meta-camp-btn-label">${selLabel}</span>
+        <i class="ti ti-chevron-down" style="font-size:12px"></i>
+      </button>
+      <div class="multiselect-dropdown" id="meta-camp-dropdown">${checkboxes}</div>
+    </div>
+    <div id="meta-sel-tags" class="selected-tags"></div>
+    <div id="meta-detail-section"></div>`;
+  } else {
+    html+=`<div class="daily-sep">分活動每日明細</div>`;
+    cfg.forEach(camp=>{
+      html+=`<div class="camp-sep">${camp.label}</div>`;
+      const campDaily=getCampDailyStats(filt,src,camp,(r,c)=>campDonFilter(r,c));
+      html+=buildDailyTable(campDaily);
+    });
+    // Google 限定：Pmax 與 Demandgen 的 TA/SP 捐款明細
+    if(src==='google'){
+      function buildTaSPTables(label,dons){
+        if(!dons.length)return'';
+        const taMap={};
+        dons.forEach(r=>{const ta=parseTA(getUtmContent(r))||'無TA';if(!taMap[ta])taMap[ta]=[];taMap[ta].push(r);});
+        const tas=Object.keys(taMap).sort();
+        const taRows=tas.map(ta=>{const m=calcM(taMap[ta].filter(validRow));return{label:ta,donTotal:m.total,donC5:m.c5,donAmt:m.amt,donA5:m.a5};});
+        const totAll=calcM(dons.filter(validRow));
+        const totRow={label:'合計',donTotal:totAll.total,donC5:totAll.c5,donAmt:totAll.amt,donA5:totAll.a5};
+        const taBody=[...taRows,totRow].map((r,i,arr)=>{
+          const isTot=i===arr.length-1;
+          return`<tr${isTot?' class="tot"':''}><td class="rh"${isTot?' style="background:var(--color-background-secondary)"':''}>${r.label}</td><td>${fmt(r.donTotal)}</td><td>${fmt(r.donC5)}</td><td>$${fmt(r.donAmt)}</td><td>$${fmt(r.donA5)}</td></tr>`;
+        }).join('');
+        const spMap={};
+        dons.forEach(r=>{const sp=parseSP(getUtmContent(r));if(!sp)return;if(!spMap[sp])spMap[sp]=[];spMap[sp].push(r);});
+        const spKeys=Object.keys(spMap).sort();
+        const spRows=spKeys.map(sp=>{const m=calcM(spMap[sp].filter(validRow));return{label:sp,donTotal:m.total,donC5:m.c5,donAmt:m.amt,donA5:m.a5};});
+        const spTotAll=calcM(dons.filter(r=>validRow(r)&&parseSP(getUtmContent(r))));
+        const spTotRow={label:'合計',donTotal:spTotAll.total,donC5:spTotAll.c5,donAmt:spTotAll.amt,donA5:spTotAll.a5};
+        const spBody=[...spRows,spTotRow].map((r,i,arr)=>{
+          const isTot=i===arr.length-1;
+          return`<tr${isTot?' class="tot"':''}><td class="rh"${isTot?' style="background:var(--color-background-secondary)"':''}>${r.label}</td><td>${fmt(r.donTotal)}</td><td>${fmt(r.donC5)}</td><td>$${fmt(r.donAmt)}</td><td>$${fmt(r.donA5)}</td></tr>`;
+        }).join('');
+        return`<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap">
+          <div>
+            <div class="daily-sep">${label} 實際捐款 × 受眾（TA）</div>
+            <div class="ad-wrap"><table class="ad-tbl">
+              <thead><tr><th class="rh">受眾 (TA)</th><th>捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th></tr></thead>
+              <tbody>${taBody}</tbody>
+            </table></div>
+          </div>
+          ${spKeys.length?`<div>
+            <div class="daily-sep">${label} 實際捐款 × 素材（SP）</div>
+            <div class="ad-wrap"><table class="ad-tbl">
+              <thead><tr><th class="rh">素材 (SP)</th><th>捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th></tr></thead>
+              <tbody>${spBody}</tbody>
+            </table></div>
+          </div>`:''}
+        </div>`;
+      }
+      const pmaxCamp=cfg.find(c=>c.campNamePattern==='pmax'||c.label==='Pmax');
+      if(pmaxCamp){const pmaxDons=allDon.filter(r=>matchGoogle(r,pmaxCamp));html+=buildTaSPTables('Pmax',pmaxDons);}
+      const dgcCamp=cfg.find(c=>c.label==='Demandgen');
+      if(dgcCamp){const dgcDons=allDon.filter(r=>matchGoogle(r,dgcCamp));html+=buildTaSPTables('DGC',dgcDons);}
+    }
+  }
+  return html;
+}
+
+function buildAdSection(){
+  const{from,to}=getRange();
+  const filt=filtDaily();
+  const filtDates=new Set(filt.map(d=>d.isoDate));
+  const allDon=daily.filter(d=>filtDates.has(d.isoDate)).flatMap(d=>d.allRows);
+  const tab=currentAdTab;
+  let html='';
+
+  // 前段時間（等長區間）比較用資料
+  const{pfrom,pto}=getPrevRange(from,to);
+  const prevFiltDates=new Set(daily.filter(d=>d.isoDate>=pfrom&&d.isoDate<=pto).map(d=>d.isoDate));
+  const prevAllDon=daily.filter(d=>prevFiltDates.has(d.isoDate)).flatMap(d=>d.allRows);
+
+  if(tab==='total'){
+    // 只顯示三張廣告活動表，不顯示每日明細
+    [
+      {src:'meta',cfg:CONFIG.meta,adRows:metaAdRows,
+        filtAd:metaAdRows?metaAdRows.filter(r=>{const dt=r['分析報告開始']||'';return dt>=from&&dt<=to;}):null,
+        prevFiltAd:metaAdRows?metaAdRows.filter(r=>{const dt=r['分析報告開始']||'';return dt>=pfrom&&dt<=pto;}):null,
+        campDonFilter:(r,c)=>matchMeta(r,c),label:'Meta',color:'#0C447C'},
+      {src:'google',cfg:CONFIG.google,adRows:gooAdRows,
+        filtAd:gooAdRows?gooAdRows.filter(r=>{const dt=r['日期']||'';return dt>=from&&dt<=to;}):null,
+        prevFiltAd:gooAdRows?gooAdRows.filter(r=>{const dt=r['日期']||'';return dt>=pfrom&&dt<=pto;}):null,
+        campDonFilter:(r,c)=>matchGoogle(r,c),label:'Google',color:'#633806'},
+      {src:'line',cfg:CONFIG.line,adRows:lineAdRows,
+        filtAd:lineAdRows?lineAdRows.filter(r=>{const dt=r['_dayIso']||'';return dt>=from&&dt<=to;}):null,
+        prevFiltAd:lineAdRows?lineAdRows.filter(r=>{const dt=r['_dayIso']||'';return dt>=pfrom&&dt<=pto;}):null,
+        campDonFilter:(r,c)=>matchLine(r),label:'LINE',color:'#065f46'},
+    ].forEach((m,i)=>{
+      if(i>0)html+=`<div class="divider" style="margin:.75rem 0"></div>`;
+      html+=`<div style="font-size:12px;font-weight:500;color:${m.color};margin-bottom:6px">${m.label}</div>`;
+      if(!m.adRows){html+=`<div class="hint"><i class="ti ti-info-circle" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>上傳廣告成效檔案後顯示整合表</div>`;return;}
+      const campRows=m.cfg.map(camp=>{
+        const cur=aggCampStats(m.src,camp,m.filtAd,allDon,m.campDonFilter);
+        const prev=m.prevFiltAd?aggCampStats(m.src,camp,m.prevFiltAd,prevAllDon,m.campDonFilter):null;
+        return{label:camp.label,...cur,prev};
+      });
+      html+=buildCampTable(campRows);
+    });
+  }
+
+  if(tab==='meta'){
+    const filtAd=metaAdRows?metaAdRows.filter(r=>{const dt=r['分析報告開始']||'';return dt>=from&&dt<=to;}):null;
+    const prevFiltAd=metaAdRows?metaAdRows.filter(r=>{const dt=r['分析報告開始']||'';return dt>=pfrom&&dt<=pto;}):null;
+    html+=buildMediaSection('meta',CONFIG.meta,metaAdRows,filtAd,allDon,filt,r=>parseSrc(r['來源參數'])==='facebook',(r,c)=>matchMeta(r,c),prevFiltAd,prevAllDon);
+  }
+  // 標記需要渲染 meta detail
+  if(tab==='meta') setTimeout(renderMetaDetail,0);
+  if(tab==='google'){
+    const filtAd=gooAdRows?gooAdRows.filter(r=>{const dt=r['日期']||'';return dt>=from&&dt<=to;}):null;
+    const prevFiltAd=gooAdRows?gooAdRows.filter(r=>{const dt=r['日期']||'';return dt>=pfrom&&dt<=pto;}):null;
+    html+=buildMediaSection('google',CONFIG.google,gooAdRows,filtAd,allDon,filt,r=>parseSrc(r['來源參數'])==='google',(r,c)=>matchGoogle(r,c),prevFiltAd,prevAllDon);
+  }
+  if(tab==='line'){
+    const filtAd=lineAdRows?lineAdRows.filter(r=>{const dt=r['_dayIso']||'';return dt>=from&&dt<=to;}):null;
+    const prevFiltAd=lineAdRows?lineAdRows.filter(r=>{const dt=r['_dayIso']||'';return dt>=pfrom&&dt<=pto;}):null;
+    html+=buildMediaSection('line',CONFIG.line,lineAdRows,filtAd,allDon,filt,r=>matchLine(r),(r,c)=>matchLine(r),prevFiltAd,prevAllDon);
+  }
+  return html;
+}
+
+function destroyCharts(){charts.forEach(c=>c.destroy());charts=[];}
+
+function renderTables(){
+  const el=id=>document.getElementById(id);
+  const filt=filtDaily();const{from,to}=getRange();
+  const AM={total:0,c5:0,nc5:0,amt:0,a5:0},AG={total:0,c5:0,nc5:0,amt:0,a5:0},AL={total:0,c5:0,nc5:0,amt:0,a5:0};
+  filt.forEach(d=>{['total','c5','nc5','amt','a5'].forEach(k=>{AM[k]+=d.meta[k];AG[k]+=d.google[k];AL[k]+=d.line[k];});});
+  const AT={total:AM.total+AG.total+AL.total,c5:AM.c5+AG.c5+AL.c5,nc5:AM.nc5+AG.nc5+AL.nc5,amt:AM.amt+AG.amt+AL.amt,a5:AM.a5+AG.a5+AL.a5};
+  const totSpend=(metaAdRows||gooAdRows||lineAdRows)?adSpendBySource(from,to,'total'):null;
+  const metaSpend=metaAdRows?adSpendBySource(from,to,'meta'):null;
+  const gooSpend=gooAdRows?adSpendBySource(from,to,'google'):null;
+  const lineSpend=lineAdRows?adSpendBySource(from,to,'line'):null;
+  if(el('tot-cards'))el('tot-cards').innerHTML=mcards7(AT,totSpend);
+  if(el('meta-cards'))el('meta-cards').innerHTML=mcards7(AM,metaSpend);
+  if(el('goo-cards'))el('goo-cards').innerHTML=mcards7(AG,gooSpend);
+  if(el('line-cards'))el('line-cards').innerHTML=mcards7(AL,lineSpend);
+  if(el('tot-wrap'))el('tot-wrap').innerHTML=platformTable('total','total');
+  if(el('meta-wrap'))el('meta-wrap').innerHTML=platformTable('meta','meta');
+  if(el('goo-wrap'))el('goo-wrap').innerHTML=platformTable('google','google');
+  if(el('line-wrap'))el('line-wrap').innerHTML=platformTable('line','line');
+  if(el('ad-section'))el('ad-section').innerHTML=buildAdSection();if(currentAdTab==='meta')setTimeout(renderMetaDetail,0);
+  ['tot-chart','meta-chart','goo-chart','line-chart'].forEach(id=>{const ex=charts.find(c=>c.canvas&&c.canvas.id===id);if(ex){ex.destroy();charts=charts.filter(c=>!(c.canvas&&c.canvas.id===id));}});
+  const labels=filt.map(d=>dlWithWeek(d.isoDate));
+  mkComboChart('tot-chart',labels,filt.map(d=>adSpendByDay(d.isoDate,'total')),filt.map(d=>d.meta.amt+d.google.amt+d.line.amt),filt.map(d=>d.meta.total+d.google.total+d.line.total));
+  mkComboChart('meta-chart',labels,filt.map(d=>adSpendByDay(d.isoDate,'meta')),filt.map(d=>d.meta.amt),filt.map(d=>d.meta.total));
+  mkComboChart('goo-chart',labels,filt.map(d=>adSpendByDay(d.isoDate,'google')),filt.map(d=>d.google.amt),filt.map(d=>d.google.total));
+  mkComboChart('line-chart',labels,filt.map(d=>adSpendByDay(d.isoDate,'line')),filt.map(d=>d.line.amt),filt.map(d=>d.line.total));
+  const hint=el('date-hint');if(hint){hint.textContent=`${from} 至 ${to}`;}
+  updateTabButtons();
+  // 同步廣告區日期欄
+  const af=document.getElementById('ad-from');const at=document.getElementById('ad-to');
+  if(af)af.value=from;if(at)at.value=to;
+}
+
+function updateTabButtons(){
+  ['total','meta','google','line'].forEach(t=>{const btn=document.getElementById('tab-'+t);if(btn){btn.className='tab-btn'+(t===currentAdTab?' active-'+t:'');}});
+}
+function switchAdTab(tab){currentAdTab=tab;const el=document.getElementById('ad-section');if(el)el.innerHTML=buildAdSection();updateTabButtons();if(tab==='meta')setTimeout(renderMetaDetail,0);}
+
+function buildDashboard(){
+  destroyCharts();
+  const AM={total:0,c5:0,nc5:0,amt:0,a5:0},AG={total:0,c5:0,nc5:0,amt:0,a5:0},AL={total:0,c5:0,nc5:0,amt:0,a5:0};
+  daily.forEach(d=>{['total','c5','nc5','amt','a5'].forEach(k=>{AM[k]+=d.meta[k];AG[k]+=d.google[k];AL[k]+=d.line[k];});});
+  document.getElementById('dashboard').innerHTML=`
+    <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:1rem">
+      <i class="ti ti-calendar" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>已解析 ${daily.length} 天資料（依訂單日期）
+      <span style="margin-left:8px;color:#1D9E75">✓ 已排除付款失敗／異常訂單</span><span style="margin-left:8px;color:var(--color-text-secondary)">溫暖送餐認列：科目 1080 且捐款名稱為「募集愛心 溫暖送餐」</span>
+    </div>
+    <div class="section-hd"><span class="badge badge-total"><i class="ti ti-sum"></i> 總表（Meta + Google + LINE）</span></div>
+    <div id="tot-cards"></div>${comboChartHTML('tot-chart')}<div id="tot-wrap"></div>
+    <div class="divider"></div>
+    <div class="section-hd"><span class="badge badge-meta"><i class="ti ti-brand-facebook"></i> Meta</span><span style="font-size:11px;color:var(--color-text-secondary)">utm_source=facebook</span></div>
+    <div id="meta-cards"></div>${comboChartHTML('meta-chart')}<div id="meta-wrap"></div>
+    <div class="divider"></div>
+    <div class="section-hd"><span class="badge badge-google"><i class="ti ti-brand-google"></i> Google</span><span style="font-size:11px;color:var(--color-text-secondary)">utm_source=google</span></div>
+    <div id="goo-cards"></div>${comboChartHTML('goo-chart')}<div id="goo-wrap"></div>
+    <div class="divider"></div>
+    <div class="section-hd"><span class="badge badge-line"><i class="ti ti-message-circle"></i> LINE</span><span style="font-size:11px;color:var(--color-text-secondary)">utm_source=line</span></div>
+    <div id="line-cards"></div>${comboChartHTML('line-chart')}<div id="line-wrap"></div>
+    <div class="divider"></div>
+    <div class="section-hd" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span class="badge badge-meta"><i class="ti ti-table"></i> 廣告成效 × 實際捐款</span>
+      <span style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--color-text-secondary)">
+        <i class="ti ti-calendar" style="font-size:13px;vertical-align:-2px"></i>
+        <input type="date" id="ad-from" style="font-size:12px;padding:3px 6px;border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)">
+        <span>—</span>
+        <input type="date" id="ad-to" style="font-size:12px;padding:3px 6px;border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)">
+      </span>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn active-total" id="tab-total" onclick="switchAdTab('total')">Meta + Google + LINE</button>
+      <button class="tab-btn" id="tab-meta" onclick="switchAdTab('meta')"><i class="ti ti-brand-facebook" style="font-size:12px;vertical-align:-1px"></i> Meta</button>
+      <button class="tab-btn" id="tab-google" onclick="switchAdTab('google')"><i class="ti ti-brand-google" style="font-size:12px;vertical-align:-1px"></i> Google</button>
+      <button class="tab-btn" id="tab-line" onclick="switchAdTab('line')"><i class="ti ti-message-circle" style="font-size:12px;vertical-align:-1px"></i> LINE</button>
+    </div>
+    <div id="ad-section"></div>
+  `;
+  renderTables();
+}
+
+function clearAll(){
+  donWb=null;donRows=null;metaAdRows=null;gooAdRows=null;lineAdRows=null;daily=[];currentAdTab='total';
+  CONFIG=JSON.parse(JSON.stringify(DEFAULT_CONFIG));destroyCharts();
+  document.getElementById('dashboard').innerHTML='';document.getElementById('date-bar').style.display='none';document.getElementById('config-tag').style.display='none';
+  ['xlsx','meta','goo','line'].forEach(k=>{document.getElementById('sub-'+k).textContent='點擊或拖曳上傳';document.getElementById('dz-'+k).classList.remove('loaded');document.getElementById('fi-'+k).value='';});
+  document.getElementById('fi-config').value='';
+}
+
+function loadConfig(file){
+  const r=new FileReader();r.onload=e=>{
+    const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+    const newCfg=parseConfig(wb);
+    const hasAnySheet=wb.SheetNames.some(n=>['Meta','Google','LINE'].includes(n));
+    if(hasAnySheet){if(newCfg.meta.length)CONFIG.meta=newCfg.meta;if(newCfg.google.length)CONFIG.google=newCfg.google;if(newCfg.line.length)CONFIG.line=newCfg.line;document.getElementById('config-name').textContent=file.name;document.getElementById('config-tag').style.display='inline-flex';if(daily.length)renderTables();}
+    else alert('設定表讀取失敗，請確認分頁名稱為 Meta / Google / LINE');
+  };r.readAsArrayBuffer(file);
+}
+function buildDailyFromAllSources(){
+  // 從捐款日報取所有列
+  const allRows=[];
+  if(donWb){
+    donWb.SheetNames.forEach(name=>{if(SKIP.includes(name))return;if(!name.match(/\d{4}/))return;const rows=XLSX.utils.sheet_to_json(donWb.Sheets[name],{defval:''});allRows.push(...rows);});
+  } else if(donRows){
+    allRows.push(...donRows);
+  }
+  const dateMap={};
+  allRows.forEach(row=>{const iso=rowDateIso(row);if(!iso)return;if(!dateMap[iso])dateMap[iso]=[];dateMap[iso].push(row);});
+
+  // 收集廣告來源的所有日期
+  const adDates=new Set();
+  if(metaAdRows)metaAdRows.forEach(r=>{const dt=r['分析報告開始']||'';if(dt)adDates.add(dt);});
+  if(gooAdRows)gooAdRows.forEach(r=>{const dt=r['日期']||'';if(dt)adDates.add(dt);});
+  if(lineAdRows)lineAdRows.forEach(r=>{const dt=r['_dayIso']||'';if(dt)adDates.add(dt);});
+
+  // 合併：廣告有但捐款沒有的日期，建立空陣列
+  adDates.forEach(iso=>{if(!dateMap[iso])dateMap[iso]=[];});
+
+  daily=Object.entries(dateMap).map(([iso,rows])=>({isoDate:iso,label:dlWithWeek(iso),allRows:rows,
+    meta:calcM(rows.filter(r=>parseSrc(r['來源參數'])==='facebook')),
+    google:calcM(rows.filter(r=>parseSrc(r['來源參數'])==='google')),
+    line:calcM(rows.filter(r=>parseSrc(r['來源參數'])==='line')),
+  })).sort((a,b)=>a.isoDate.localeCompare(b.isoDate));
+}
+
+function updateDateRange(){
+  if(!daily.length)return;
+  const mn=daily[0].isoDate,mx=daily[daily.length-1].isoDate;
+  const gf=document.getElementById('g-from'),gt=document.getElementById('g-to');
+  const prevFrom=gf.value,prevTo=gt.value;
+  gf.min=mn;gf.max=mx;gt.min=mn;gt.max=mx;
+  if(!prevFrom||prevFrom<mn||prevFrom>mx)gf.value=mn;
+  if(!prevTo||prevTo<mn||prevTo>mx)gt.value=mx;
+  document.getElementById('date-bar').style.display='flex';
+}
+
+function loadXlsx(file){
+  const r=new FileReader();r.onload=e=>{
+    donWb=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true});
+    buildDailyFromAllSources();updateDateRange();
+    document.getElementById('sub-xlsx').textContent=file.name;document.getElementById('dz-xlsx').classList.add('loaded');buildDashboard();
+  };r.readAsArrayBuffer(file);
+}
+function loadMetaCsv(file){Papa.parse(file,{header:true,skipEmptyLines:true,complete:res=>{metaAdRows=res.data;document.getElementById('sub-meta').textContent=file.name;document.getElementById('dz-meta').classList.add('loaded');buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();}});}
+function loadGooCsv(file){Papa.parse(file,{header:true,skipEmptyLines:true,beforeFirstChunk:chunk=>{const lines=chunk.split(/\r?\n/);return lines.slice(2).join('\n');},complete:res=>{gooAdRows=res.data;document.getElementById('sub-goo').textContent=file.name;document.getElementById('dz-goo').classList.add('loaded');buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();}});}
+
+const DON_SHEETS_ID='1Kq4KYLACd2vLqKn2huP-1f6PP3O1O4AOQ8AHdgRC4QE';
+async function loadDonFromSheets(){
+  const st=document.getElementById('sheets-status-don');
+  if(st){st.textContent='載入中…';st.style.color='var(--color-text-secondary)';}
+  const today=new Date();
+  // 從365天前到今天，全部同時發請求加速載入
+  const start=new Date(2026,8,22);
+  const dates=[];
+  for(let d=new Date(start);d<=today;d.setDate(d.getDate()+1)){
+    const mm=String(d.getMonth()+1).padStart(2,'0');
+    const dd2=String(d.getDate()).padStart(2,'0');
+    dates.push(mm+dd2+'更新');
+  }
+  const fetchSheet=async(sheetName)=>{
+    try{
+      const url=`https://docs.google.com/spreadsheets/d/${DON_SHEETS_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+      const resp=await fetch(url);
+      if(!resp.ok)return null;
+      const text=await resp.text();
+      if(!text||text.includes('Visualization: Access denied')||text.trim()==='')return null;
+      const parsed=Papa.parse(text,{header:true,skipEmptyLines:true});
+      // ⚠ gviz 對「不存在的分頁名稱」不會報錯，會靜默回傳第一個分頁（專案目標）。
+      // 必須驗證表頭確實是捐款明細，否則專案目標那 21 列會被當成捐款算進去。
+      const fields=(parsed.meta&&parsed.meta.fields)||[];
+      if(!fields.includes('訂單編號')||!fields.includes('捐款總額'))return null;
+      return(parsed.data&&parsed.data.length>0)?parsed.data:null;
+    }catch(e){return null;}
+  };
+  const results=await Promise.all(dates.map(fetchSheet));
+  const allRows=[];let loaded=0;const seenKeys=new Set();
+  results.forEach(rows=>{
+    if(!rows)return;
+    // 同一筆捐款可能同時出現在多個「MMDD更新」分頁，以 訂單編號+捐款細項+金額 去重
+    let added=0;
+    rows.forEach(r=>{
+      if(!r['訂單編號'])return;
+      const k=r['訂單編號']+'|'+(r['捐款細項']||'')+'|'+(r['捐款總額']||'');
+      if(seenKeys.has(k))return;
+      seenKeys.add(k);allRows.push(r);added++;
+    });
+    if(added)loaded++;
+  });
+  if(allRows.length>0){
+    donWb=null;donRows=allRows;
+    buildDailyFromAllSources();updateDateRange();
+    document.getElementById('sub-xlsx').textContent=`已從 Sheets 載入（${loaded} 天）`;
+    document.getElementById('dz-xlsx').classList.add('loaded');
+    buildDashboard();
+    if(st){st.textContent=`✓ 載入 ${loaded} 天資料`;st.style.color='#1D9E75';}
+  }else{
+    if(st){st.textContent='載入失敗，請用 .command 開啟儀表板';st.style.color='#c0392b';}
+  }
+}
+
+const GOO_SHEET_ID='15A-ndSv-gFzZMwp1J8x9TeU2NWKWhgSlo0_IeOPQf3c';
+const GOO_SHEET_NAME='wv_daily';
+async function loadGooFromSheets(){
+  const st=document.getElementById('sheets-status-goo');
+  if(st){st.textContent='載入中…';st.style.color='var(--color-text-secondary)';}
+  try{
+    const url=`https://docs.google.com/spreadsheets/d/${GOO_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(GOO_SHEET_NAME)}`;
+    const resp=await fetch(url);
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const text=await resp.text();
+    if(!text||text.includes('Visualization: Access denied'))throw new Error('無法存取試算表');
+    Papa.parse(text,{header:true,skipEmptyLines:true,
+      transformHeader:h=>{
+        const map={'Campaign Name':'廣告活動','Day':'日期','Cost':'費用','Clicks':'點擊','加入購物車':'ATC-點擊送餐按鈕','購買':'Purchase-完成捐款'};
+        return map[h.trim()]||h.trim();
+      },
+      complete:res=>{
+        if(!res.data||!res.data.length){if(st){st.textContent='載入失敗：無資料';st.style.color='#c0392b';}return;}
+        // 轉換價值 = 所有「○○ value」欄位加總（轉換ROAS 用）
+        res.data.forEach(r=>{let v=0;Object.keys(r).forEach(k=>{if(/ value$/.test(k))v+=numVal(r[k]);});r['轉換價值']=v;});
+        gooAdRows=res.data;
+        document.getElementById('sub-goo').textContent=`已從 Sheets 載入（${res.data.length} 筆）`;
+        document.getElementById('dz-goo').classList.add('loaded');
+        if(st){st.textContent=`✓ ${res.data.length} 筆資料`;st.style.color='#1D9E75';}
+        buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();
+      }
+    });
+  }catch(e){
+    if(st){st.textContent='載入失敗：'+e.message;st.style.color='#c0392b';}
+  }
+}
+function loadLineXlsx(file){
+  const r=new FileReader();r.onload=e=>{
+    const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true});
+    const ws=wb.Sheets['Raw'];if(!ws){alert('找不到 Raw 分頁');return;}
+    const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+    lineAdRows=rows.map(r=>{let day=r['Day'],iso='';if(day instanceof Date)iso=isoDate(day);else if(typeof day==='string'&&day.match(/\d{4}-\d{2}-\d{2}/))iso=day.substring(0,10);else if(typeof day==='number'){const d=new Date(Math.round((day-25569)*86400*1000));iso=isoDate(d);}return{...r,_dayIso:iso};});
+    document.getElementById('sub-line').textContent=file.name;document.getElementById('dz-line').classList.add('loaded');buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();
+  };r.readAsArrayBuffer(file);
+}
+
+const LINE_SHEETS_ID='1rfHflRL2oioAKOZtN7WsF_tA2csCpN0BAhtizXnRKE8';
+async function loadLineFromSheets(){
+  const st=document.getElementById('sheets-status-line');
+  if(st){st.textContent='載入中…';st.style.color='var(--color-text-secondary)';}
+  try{
+    const url=`https://docs.google.com/spreadsheets/d/${LINE_SHEETS_ID}/gviz/tq?tqx=out:csv&sheet=Raw`;
+    const resp=await fetch(url);
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const text=await resp.text();
+    if(!text||text.includes('Visualization: Access denied'))throw new Error('無法存取試算表');
+    const parsed=Papa.parse(text,{header:true,skipEmptyLines:true});
+    if(!parsed.data||!parsed.data.length)throw new Error('無資料');
+    lineAdRows=parsed.data.map(r=>{
+      const day=r['Day']||'';
+      const iso=day.match(/\d{4}-\d{2}-\d{2}/)?day.substring(0,10):'';
+      return{...r,_dayIso:iso};
+    });
+    document.getElementById('sub-line').textContent='已從 Sheets 載入';
+    document.getElementById('dz-line').classList.add('loaded');
+    if(st){st.textContent='✓ 載入成功';st.style.color='#1D9E75';}
+    buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();
+  }catch(e){
+    if(st){st.textContent='載入失敗：'+e.message;st.style.color='#c0392b';}
+  }
+}
+
+document.getElementById('g-from').addEventListener('change',function(){
+  const adFrom=document.getElementById('ad-from');if(adFrom)adFrom.value=this.value;
+  renderTables();
+});
+document.getElementById('g-to').addEventListener('change',function(){
+  const adTo=document.getElementById('ad-to');if(adTo)adTo.value=this.value;
+  renderTables();
+});
+document.addEventListener('change',function(e){
+  if(e.target.id==='ad-from'){document.getElementById('g-from').value=e.target.value;renderTables();}
+  if(e.target.id==='ad-to'){document.getElementById('g-to').value=e.target.value;renderTables();}
+});
+
+const META_AD_ACCOUNT='act_1962319981371840';
+const META_API_VER='v19.0';
+
+async function loadMetaFromAPI(){
+  const st=document.getElementById('sheets-status-meta');
+  const token='EAAOgjBZCa97gBSezALPCJ4eFN35uicMPkAASU9ASMWoMxaVdH4i26WiwDGIGk5heSuxAttSCK9fR4H0ULN3dUixmC7cbikAbzdAOI5PCBDQQJrd0PBrzPOOAkhxvKRXyPcz9xgSz5fLHDJfLHgIQN0oTAb4zb1Qen2hbZBQsTQgC6ydfW0kusJC27D';
+  if(st){st.textContent='載入中…';st.style.color='var(--color-text-secondary)';}
+  const today=new Date();
+  const start=new Date(2026,8,22);
+  const since=isoDate(start);const until=isoDate(today);
+  try{
+    const params=new URLSearchParams({fields:'campaign_name,adset_name,ad_name,spend,actions,action_values',level:'ad',time_increment:'1',time_range:JSON.stringify({since,until}),limit:'500',access_token:token});
+    let url=`https://graph.facebook.com/${META_API_VER}/${META_AD_ACCOUNT}/insights?${params}`;
+    const allData=[];
+    while(url){
+      const resp=await fetch(url);const json=await resp.json();
+      if(json.error){if(json.error.code===190||json.error.type==='OAuthException'){localStorage.removeItem('meta_access_token');}throw new Error(json.error.message);}
+      if(json.data)allData.push(...json.data);
+      url=json.paging?.next||null;
+    }
+    metaAdRows=allData.map(row=>{
+      const acts={};(row.actions||[]).forEach(a=>{acts[a.action_type]=parseFloat(a.value)||0;});
+      const avs={};(row.action_values||[]).forEach(a=>{avs[a.action_type]=parseFloat(a.value)||0;});
+      return{'分析報告開始':row.date_start,'行銷活動名稱':row.campaign_name,'廣告組合名稱':row.adset_name,'廣告名稱':row.ad_name,'花費金額 (TWD)':parseFloat(row.spend)||0,'連結點擊次數':acts['link_click']||0,'加到購物車次數':acts['omni_add_to_cart']||0,'購買次數':acts['omni_purchase']||0,'轉換價值':avs['omni_purchase']||avs['purchase']||0};
+    });
+    document.getElementById('sub-meta').textContent=`已從 Meta API 載入（${allData.length} 筆）`;
+    document.getElementById('dz-meta').classList.add('loaded');
+    if(st){st.textContent=`✓ ${allData.length} 筆資料`;st.style.color='#1D9E75';}
+    buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();
+  }catch(e){
+    if(st){st.textContent='載入失敗：'+e.message;st.style.color='#c0392b';}
+  }
+}
+
+async function reloadAllSheets(){
+  const btn=document.getElementById('btn-reload');
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> 抓取中…';}
+  const tasks=[loadDonFromSheets(),loadGooFromSheets(),loadLineFromSheets(),loadMetaFromAPI()];
+  await Promise.all(tasks);
+  if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-refresh"></i> 重新抓取';}
+}
+
+// 頁面開啟自動載入
+window.addEventListener('load',()=>reloadAllSheets());
+</script>
+</body>
+</html>
