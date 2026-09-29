@@ -227,6 +227,9 @@ function adSpendBySource(from,to,src){
 // LINE 購買金額的候選欄名。Raw 分頁目前只有 Purchase（次數）、沒有任何金額欄，
 // 所以 LINE 的「捐款價值」會是 $0；日後表上新增金額欄時，把欄名加進這個陣列即可自動生效。
 const LINE_VAL_KEYS=['ConvValue','Purchase value','PurchaseValue','Value','Conversion Value','購買價值'];
+// Google wv_daily 的「購買」金額欄候選，依優先序：前面幾個是「所有轉換價值」口徑（理想），
+// 最後的 '購買 value' 是現況（只含轉換次數口徑，品牌字與 DGC 因為沒勾 PURCHASE 目標會是 0）。
+const GOO_VAL_KEYS=['購買 all value','購買 所有轉換價值','購買 all conv value','購買 allvalue','購買 all_conversions value'];
 function lineVal(r){for(const k of LINE_VAL_KEYS){if(r[k]!==undefined&&r[k]!=='')return numVal(r[k]);}return 0;}
 function adByDay(iso,src,field){
   let s=0;
@@ -959,7 +962,17 @@ async function loadGooFromSheets(){
         // 轉換價值 = 廣告系統自訂轉換「購買（Purchase-完成捐款）」的轉換價值，供「捐款ROAS（廣告系統）」用。
         // 不加總其他 value 欄（註冊/聯絡人/開始結帳…），否則分子會混進非捐款行為而失真。
         // Meta 端對應的是 omni_purchase 的 action_value，兩邊口徑一致。
-        res.data.forEach(r=>{r['轉換價值']=numVal(r['購買 value']);});
+        // 優先吃「所有轉換價值」版本（含瀏覽後轉換、且不受廣告活動層級轉換目標有沒有勾 PURCHASE 影響），
+        // 表上還沒有那欄時才退回只算轉換次數的「購買 value」。欄名一出現就會自動切換，不必再改程式。
+        res.data.forEach(r=>{
+          let v=null;
+          for(const k of GOO_VAL_KEYS){if(r[k]!==undefined&&r[k]!==''){v=numVal(r[k]);break;}}
+          r['轉換價值']=(v===null)?numVal(r['購買 value']):v;
+        });
+        if(res.data.length){
+          const hit=GOO_VAL_KEYS.find(k=>res.data[0][k]!==undefined&&res.data[0][k]!=='');
+          console.log('[wv] Google 捐款價值來源欄位：',hit||'購買 value（僅轉換次數口徑，品牌字/DGC 會是 0）');
+        }
         gooAdRows=res.data;
         document.getElementById('sub-goo').textContent=`已從 Sheets 載入（${res.data.length} 筆）`;
         document.getElementById('dz-goo').classList.add('loaded');
