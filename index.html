@@ -346,8 +346,8 @@ function pctBadge(field,cur,prev){
 }
 
 const AD_GRP_HD=`<tr><th class="rh"></th><th colspan="7" style="text-align:center;font-size:10px;letter-spacing:.04em;border-left:.5px solid var(--color-border-secondary)">廣告系統數據</th><th colspan="6" style="text-align:center;font-size:10px;letter-spacing:.04em;border-left:.5px solid var(--color-border-secondary)">實際捐款數據</th></tr>`;
-const AD_COL_HD_CAMP=`<tr><th class="rh">廣告活動</th><th style="border-left:.5px solid var(--color-border-secondary)">花費 (TWD)</th><th>點擊</th><th>點擊送餐按鈕</th><th>完成捐款</th><th>CPC</th><th>每次點擊送餐按鈕成本</th><th>轉換ROAS</th><th style="border-left:.5px solid var(--color-border-secondary)">捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th><th>捐款ROAS</th><th>溫暖送餐ROAS</th></tr>`;
-const AD_COL_HD_DATE=`<tr><th class="rh">日期</th><th style="border-left:.5px solid var(--color-border-secondary)">花費 (TWD)</th><th>點擊</th><th>點擊送餐按鈕</th><th>完成捐款</th><th>CPC</th><th>每次點擊送餐按鈕成本</th><th>轉換ROAS</th><th style="border-left:.5px solid var(--color-border-secondary)">捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th><th>捐款ROAS</th><th>溫暖送餐ROAS</th></tr>`;
+const AD_COL_HD_CAMP=`<tr><th class="rh">廣告活動</th><th style="border-left:.5px solid var(--color-border-secondary)">花費 (TWD)</th><th>點擊</th><th>點擊送餐按鈕</th><th>完成捐款</th><th>CPC</th><th>每次點擊送餐按鈕成本</th><th>捐款ROAS（廣告系統）</th><th style="border-left:.5px solid var(--color-border-secondary)">捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th><th>捐款ROAS</th><th>溫暖送餐ROAS</th></tr>`;
+const AD_COL_HD_DATE=`<tr><th class="rh">日期</th><th style="border-left:.5px solid var(--color-border-secondary)">花費 (TWD)</th><th>點擊</th><th>點擊送餐按鈕</th><th>完成捐款</th><th>CPC</th><th>每次點擊送餐按鈕成本</th><th>捐款ROAS（廣告系統）</th><th style="border-left:.5px solid var(--color-border-secondary)">捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th><th>捐款ROAS</th><th>溫暖送餐ROAS</th></tr>`;
 
 function adRow(r,isTot,showCompare){
   const p=r.prev;
@@ -948,8 +948,10 @@ async function loadGooFromSheets(){
       },
       complete:res=>{
         if(!res.data||!res.data.length){if(st){st.textContent='載入失敗：無資料';st.style.color='#c0392b';}return;}
-        // 轉換價值 = 所有「○○ value」欄位加總（轉換ROAS 用）
-        res.data.forEach(r=>{let v=0;Object.keys(r).forEach(k=>{if(/ value$/.test(k))v+=numVal(r[k]);});r['轉換價值']=v;});
+        // 轉換價值 = 廣告系統自訂轉換「購買（Purchase-完成捐款）」的轉換價值，供「捐款ROAS（廣告系統）」用。
+        // 不加總其他 value 欄（註冊/聯絡人/開始結帳…），否則分子會混進非捐款行為而失真。
+        // Meta 端對應的是 omni_purchase 的 action_value，兩邊口徑一致。
+        res.data.forEach(r=>{r['轉換價值']=numVal(r['購買 value']);});
         gooAdRows=res.data;
         document.getElementById('sub-goo').textContent=`已從 Sheets 載入（${res.data.length} 筆）`;
         document.getElementById('dz-goo').classList.add('loaded');
