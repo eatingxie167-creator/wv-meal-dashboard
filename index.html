@@ -224,6 +224,10 @@ function adSpendBySource(from,to,src){
   if((src==='line'||src==='total')&&lineAdRows){lineAdRows.filter(r=>{const dt=r['_dayIso']||'';return dt>=from&&dt<=to;}).forEach(r=>{s+=numVal(r['Cost']);});}
   return s;
 }
+// LINE 購買金額的候選欄名。Raw 分頁目前只有 Purchase（次數）、沒有任何金額欄，
+// 所以 LINE 的「捐款價值」會是 $0；日後表上新增金額欄時，把欄名加進這個陣列即可自動生效。
+const LINE_VAL_KEYS=['ConvValue','Purchase value','PurchaseValue','Value','Conversion Value','購買價值'];
+function lineVal(r){for(const k of LINE_VAL_KEYS){if(r[k]!==undefined&&r[k]!=='')return numVal(r[k]);}return 0;}
 function adByDay(iso,src,field){
   let s=0;
   const metaField={'spend':'花費金額 (TWD)','click':'連結點擊次數','atc':'加到購物車次數','purch':'購買次數','convv':'轉換價值'};
@@ -231,7 +235,7 @@ function adByDay(iso,src,field){
   const lineField={'spend':'Cost','click':'Clicks','atc':'AddToCart','purch':'Purchase','convv':'ConvValue'};
   if((src==='meta'||src==='total')&&metaAdRows){const ns=CONFIG.meta.flatMap(c=>c.campNames);metaAdRows.filter(r=>r['分析報告開始']===iso&&ns.includes(r['行銷活動名稱'])).forEach(r=>{s+=numVal(r[metaField[field]]);});}
   if((src==='google'||src==='total')&&gooAdRows){gooAdRows.filter(r=>{if(r['日期']!==iso)return false;const name=String(r['廣告活動']||'');return CONFIG.google.some(c=>c.campNamePattern?name.toLowerCase().includes(c.campNamePattern):(c.campNames||[]).includes(name));}).forEach(r=>{s+=numVal(r[gooField[field]]);});}
-  if((src==='line'||src==='total')&&lineAdRows){lineAdRows.filter(r=>r['_dayIso']===iso).forEach(r=>{s+=numVal(r[lineField[field]]);});}
+  if((src==='line'||src==='total')&&lineAdRows){lineAdRows.filter(r=>r['_dayIso']===iso).forEach(r=>{s+=(field==='convv')?lineVal(r):numVal(r[lineField[field]]);});}
   return s;
 }
 function adSpendByDay(iso,src){return adByDay(iso,src,'spend');}
@@ -242,7 +246,7 @@ function adCampByDay(iso,camp,src){
   let spend=0,click=0,atc=0,purch=0,convv=0;
   if(src==='meta'&&metaAdRows){metaAdRows.filter(r=>r['分析報告開始']===iso&&campNames.includes(r['行銷活動名稱'])).forEach(r=>{spend+=numVal(r['花費金額 (TWD)']);click+=numVal(r['連結點擊次數']);atc+=numVal(r['加到購物車次數']);purch+=numVal(r['購買次數']);convv+=numVal(r['轉換價值']);});}
   if(src==='google'&&gooAdRows){gooAdRows.filter(r=>{if(r['日期']!==iso)return false;const name=String(r['廣告活動']||'');return camp.campNamePattern?name.toLowerCase().includes(camp.campNamePattern):campNames.includes(name);}).forEach(r=>{spend+=numVal(r['費用']);click+=numVal(r['點擊']);atc+=numVal(r['ATC-點擊送餐按鈕']);purch+=numVal(r['Purchase-完成捐款']);convv+=numVal(r['轉換價值']);});}
-  if(src==='line'&&lineAdRows){lineAdRows.filter(r=>r['_dayIso']===iso).forEach(r=>{spend+=numVal(r['Cost']);click+=numVal(r['Clicks']);atc+=numVal(r['AddToCart']);purch+=numVal(r['Purchase']);});}
+  if(src==='line'&&lineAdRows){lineAdRows.filter(r=>r['_dayIso']===iso).forEach(r=>{spend+=numVal(r['Cost']);click+=numVal(r['Clicks']);atc+=numVal(r['AddToCart']);purch+=numVal(r['Purchase']);convv+=lineVal(r);});}
   return{spend,click,atc,purch,convv};
 }
 
@@ -345,14 +349,14 @@ function pctBadge(field,cur,prev){
   return` <span style="font-size:10px;color:${color}">${sign}${val}%</span>`;
 }
 
-const AD_GRP_HD=`<tr><th class="rh"></th><th colspan="7" style="text-align:center;font-size:10px;letter-spacing:.04em;border-left:.5px solid var(--color-border-secondary)">廣告系統數據</th><th colspan="6" style="text-align:center;font-size:10px;letter-spacing:.04em;border-left:.5px solid var(--color-border-secondary)">實際捐款數據</th></tr>`;
-const AD_COL_HD_CAMP=`<tr><th class="rh">廣告活動</th><th style="border-left:.5px solid var(--color-border-secondary)">花費 (TWD)</th><th>點擊</th><th>點擊送餐按鈕</th><th>完成捐款</th><th>CPC</th><th>每次點擊送餐按鈕成本</th><th>捐款ROAS（廣告系統）</th><th style="border-left:.5px solid var(--color-border-secondary)">捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th><th>捐款ROAS</th><th>溫暖送餐ROAS</th></tr>`;
-const AD_COL_HD_DATE=`<tr><th class="rh">日期</th><th style="border-left:.5px solid var(--color-border-secondary)">花費 (TWD)</th><th>點擊</th><th>點擊送餐按鈕</th><th>完成捐款</th><th>CPC</th><th>每次點擊送餐按鈕成本</th><th>捐款ROAS（廣告系統）</th><th style="border-left:.5px solid var(--color-border-secondary)">捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th><th>捐款ROAS</th><th>溫暖送餐ROAS</th></tr>`;
+const AD_GRP_HD=`<tr><th class="rh"></th><th colspan="8" style="text-align:center;font-size:10px;letter-spacing:.04em;border-left:.5px solid var(--color-border-secondary)">廣告系統數據</th><th colspan="6" style="text-align:center;font-size:10px;letter-spacing:.04em;border-left:.5px solid var(--color-border-secondary)">實際捐款數據</th></tr>`;
+const AD_COL_HD_CAMP=`<tr><th class="rh">廣告活動</th><th style="border-left:.5px solid var(--color-border-secondary)">花費 (TWD)</th><th>點擊</th><th>點擊送餐按鈕</th><th>完成捐款</th><th>捐款價值</th><th>CPC</th><th>每次點擊送餐按鈕成本</th><th>捐款ROAS（廣告系統）</th><th style="border-left:.5px solid var(--color-border-secondary)">捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th><th>捐款ROAS</th><th>溫暖送餐ROAS</th></tr>`;
+const AD_COL_HD_DATE=`<tr><th class="rh">日期</th><th style="border-left:.5px solid var(--color-border-secondary)">花費 (TWD)</th><th>點擊</th><th>點擊送餐按鈕</th><th>完成捐款</th><th>捐款價值</th><th>CPC</th><th>每次點擊送餐按鈕成本</th><th>捐款ROAS（廣告系統）</th><th style="border-left:.5px solid var(--color-border-secondary)">捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th><th>捐款ROAS</th><th>溫暖送餐ROAS</th></tr>`;
 
 function adRow(r,isTot,showCompare){
   const p=r.prev;
   const b=field=>(showCompare&&p)?pctBadge(field,r[field],p[field]):'';
-  return`<tr${isTot?' class="tot"':''}><td class="rh"${isTot?' style="background:var(--color-background-secondary)"':''}>${r.label}</td><td style="border-left:.5px solid var(--color-border-secondary)">$${fmt(r.spend)}${b('spend')}</td><td>${fmt(r.click)}${b('click')}</td><td>${fmt(r.atc)}${b('atc')}</td><td>${fmt(r.purch)}${b('purch')}</td><td style="color:var(--color-text-secondary)">${fmtD(r.cpc)}${b('cpc')}</td><td style="color:var(--color-text-secondary)">${fmtD(r.cpatc)}${b('cpatc')}</td><td style="color:var(--color-text-secondary)">${fmtR(r.convRoas)}${b('convRoas')}</td><td style="border-left:.5px solid var(--color-border-secondary)">${fmt(r.donTotal)}${b('donTotal')}</td><td>${fmt(r.donC5)}${b('donC5')}</td><td>$${fmt(r.donAmt)}${b('donAmt')}</td><td>$${fmt(r.donA5)}${b('donA5')}</td><td style="color:var(--color-text-secondary)">${fmtR(r.donRoas)}${b('donRoas')}</td><td style="color:var(--color-text-secondary)">${fmtR(r.mealRoas)}${b('mealRoas')}</td></tr>`;
+  return`<tr${isTot?' class="tot"':''}><td class="rh"${isTot?' style="background:var(--color-background-secondary)"':''}>${r.label}</td><td style="border-left:.5px solid var(--color-border-secondary)">$${fmt(r.spend)}${b('spend')}</td><td>${fmt(r.click)}${b('click')}</td><td>${fmt(r.atc)}${b('atc')}</td><td>${fmt(r.purch)}${b('purch')}</td><td>$${fmt(r.convv)}${b('convv')}</td><td style="color:var(--color-text-secondary)">${fmtD(r.cpc)}${b('cpc')}</td><td style="color:var(--color-text-secondary)">${fmtD(r.cpatc)}${b('cpatc')}</td><td style="color:var(--color-text-secondary)">${fmtR(r.convRoas)}${b('convRoas')}</td><td style="border-left:.5px solid var(--color-border-secondary)">${fmt(r.donTotal)}${b('donTotal')}</td><td>${fmt(r.donC5)}${b('donC5')}</td><td>$${fmt(r.donAmt)}${b('donAmt')}</td><td>$${fmt(r.donA5)}${b('donA5')}</td><td style="color:var(--color-text-secondary)">${fmtR(r.donRoas)}${b('donRoas')}</td><td style="color:var(--color-text-secondary)">${fmtR(r.mealRoas)}${b('mealRoas')}</td></tr>`;
 }
 
 function totRow(rows){
@@ -855,9 +859,13 @@ function buildDailyFromAllSources(){
   })).sort((a,b)=>a.isoDate.localeCompare(b.isoDate));
 }
 
+// 本波起始日。Google 的 wv_daily 是從 6/01 一路累積的同一張表，若不夾住下界，
+// 預設區間會拉到 6/01，把上一波（兒童月捐）的花費跟這一波的捐款混在一起算 ROAS。
+const WAVE_START='2026-09-22';
 function updateDateRange(){
   if(!daily.length)return;
-  const mn=daily[0].isoDate,mx=daily[daily.length-1].isoDate;
+  const rawMn=daily[0].isoDate,mx=daily[daily.length-1].isoDate;
+  const mn=(rawMn<WAVE_START&&mx>=WAVE_START)?WAVE_START:rawMn;
   const gf=document.getElementById('g-from'),gt=document.getElementById('g-to');
   const prevFrom=gf.value,prevTo=gt.value;
   gf.min=mn;gf.max=mx;gt.min=mn;gt.max=mx;
