@@ -953,15 +953,33 @@ async function loadDonFromSheets(){
 
 const GOO_SHEET_ID='15A-ndSv-gFzZMwp1J8x9TeU2NWKWhgSlo0_IeOPQf3c';
 const GOO_SHEET_NAME='wv_daily';
+// 優先讀 repo 內的 google_daily.csv —— 由 build_google_csv.py 直接打 Google Ads API 產生，
+// 口徑是「所有轉換／所有轉換價值」（含瀏覽後轉換，且不受廣告活動層級轉換目標影響）。
+// 抓不到才退回試算表的 wv_daily，那份是「轉換次數／轉換價值」口徑，
+// SEM品牌字 與 Demand Gen 因為沒把 PURCHASE 設為轉換目標，購買數與金額會是 0。
+// 兩邊欄名完全相同，所以下面的 transformHeader 與解析流程共用。
+const GOO_LOCAL_CSV='google_daily.csv';
 async function loadGooFromSheets(){
   const st=document.getElementById('sheets-status-goo');
   if(st){st.textContent='載入中…';st.style.color='var(--color-text-secondary)';}
+  let text=null,srcLabel='';
   try{
-    const url=`https://docs.google.com/spreadsheets/d/${GOO_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(GOO_SHEET_NAME)}`;
-    const resp=await fetch(url);
-    if(!resp.ok)throw new Error('HTTP '+resp.status);
-    const text=await resp.text();
-    if(!text||text.includes('Visualization: Access denied'))throw new Error('無法存取試算表');
+    const r=await fetch(GOO_LOCAL_CSV+'?cb='+Date.now());
+    if(r.ok){
+      const t=await r.text();
+      // 確認真的是 CSV：GitHub Pages 對不存在的路徑會回 404 頁面而不是錯誤碼
+      if(t&&t.split('\n',1)[0].includes('Campaign Name')){text=t;srcLabel='所有轉換';}
+    }
+  }catch(e){/* 沒有這個檔就走試算表 */}
+  try{
+    if(text===null){
+      const url=`https://docs.google.com/spreadsheets/d/${GOO_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(GOO_SHEET_NAME)}`;
+      const resp=await fetch(url);
+      if(!resp.ok)throw new Error('HTTP '+resp.status);
+      const t=await resp.text();
+      if(!t||t.includes('Visualization: Access denied'))throw new Error('無法存取試算表');
+      text=t;srcLabel='轉換次數';
+    }
     Papa.parse(text,{header:true,skipEmptyLines:true,
       transformHeader:h=>{
         const map={'Campaign Name':'廣告活動','Day':'日期','Cost':'費用','Clicks':'點擊','加入購物車':'ATC-點擊送餐按鈕','購買':'Purchase-完成捐款'};
@@ -979,14 +997,11 @@ async function loadGooFromSheets(){
           for(const k of GOO_VAL_KEYS){if(r[k]!==undefined&&r[k]!==''){v=numVal(r[k]);break;}}
           r['轉換價值']=(v===null)?numVal(r['購買 value']):v;
         });
-        if(res.data.length){
-          const hit=GOO_VAL_KEYS.find(k=>res.data[0][k]!==undefined&&res.data[0][k]!=='');
-          console.log('[wv] Google 捐款價值來源欄位：',hit||'購買 value（僅轉換次數口徑，品牌字/DGC 會是 0）');
-        }
+        console.log('[wv] Google 資料來源：',srcLabel==='所有轉換'?`${GOO_LOCAL_CSV}（所有轉換口徑）`:'試算表 wv_daily（轉換次數口徑，品牌字/DGC 購買為 0）','／筆數：',res.data.length);
         gooAdRows=res.data;
-        document.getElementById('sub-goo').textContent=`已從 Sheets 載入（${res.data.length} 筆）`;
+        document.getElementById('sub-goo').textContent=`已載入（${res.data.length} 筆・${srcLabel}）`;
         document.getElementById('dz-goo').classList.add('loaded');
-        if(st){st.textContent=`✓ ${res.data.length} 筆資料`;st.style.color='#1D9E75';}
+        if(st){st.textContent=`✓ ${res.data.length} 筆・${srcLabel}`;st.style.color='#1D9E75';}
         buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();
       }
     });
