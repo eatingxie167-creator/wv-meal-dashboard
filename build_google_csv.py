@@ -109,12 +109,22 @@ def make_query(env, token):
             args += ["-H", h]
         args += ["-d", json.dumps({"query": gaql})]
         out = subprocess.run(args, capture_output=True, text=True).stdout
-        payload = json.loads(out)
-        if isinstance(payload, dict) and "error" in payload:
-            sys.exit(f"[錯誤] API：{json.dumps(payload['error'], ensure_ascii=False)[:600]}")
+        try:
+            payload = json.loads(out)
+        except json.JSONDecodeError:
+            sys.exit(f"[錯誤] 回應不是 JSON：{out[:400]}")
+        # ⚠ searchStream 成功時回傳「陣列」，但失敗時錯誤可能是
+        #   {"error": ...} 或 [{"error": ...}] 兩種形狀。只檢查 dict 會把
+        #   錯誤當成空結果吞掉，導致 CSV 少資料卻不報錯。兩種都要擋。
+        chunks = payload if isinstance(payload, list) else [payload]
+        for chunk in chunks:
+            if isinstance(chunk, dict) and "error" in chunk:
+                sys.exit(f"[錯誤] API：{json.dumps(chunk['error'], ensure_ascii=False)[:600]}")
         rows = []
-        for chunk in payload:
+        for chunk in chunks:
             rows += chunk.get("results", [])
+        if not rows:
+            sys.exit("[錯誤] 查詢回傳 0 筆，請確認日期區間與帳號權限：\n  " + gaql[:200])
         return rows
 
     return query
