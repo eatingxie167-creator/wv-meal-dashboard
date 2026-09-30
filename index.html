@@ -888,18 +888,12 @@ function loadMetaCsv(file){Papa.parse(file,{header:true,skipEmptyLines:true,comp
 function loadGooCsv(file){Papa.parse(file,{header:true,skipEmptyLines:true,beforeFirstChunk:chunk=>{const lines=chunk.split(/\r?\n/);return lines.slice(2).join('\n');},complete:res=>{gooAdRows=res.data;document.getElementById('sub-goo').textContent=file.name;document.getElementById('dz-goo').classList.add('loaded');buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();}});}
 
 const DON_SHEETS_ID='1Kq4KYLACd2vLqKn2huP-1f6PP3O1O4AOQ8AHdgRC4QE';
+// 客戶在 2026/09 下旬把捐款表從「每天一個 MMDD更新 分頁」改成單一彙總分頁。
+// 先試彙總分頁（依序試候選名稱），抓不到才退回舊的逐日分頁模式，兩種結構都吃得到。
+const DON_TAB_KEYS=['捐款訂單','捐款明細','捐款資料','訂單明細','Raw'];
 async function loadDonFromSheets(){
   const st=document.getElementById('sheets-status-don');
   if(st){st.textContent='載入中…';st.style.color='var(--color-text-secondary)';}
-  const today=new Date();
-  // 從365天前到今天，全部同時發請求加速載入
-  const start=new Date(2026,8,22);
-  const dates=[];
-  for(let d=new Date(start);d<=today;d.setDate(d.getDate()+1)){
-    const mm=String(d.getMonth()+1).padStart(2,'0');
-    const dd2=String(d.getDate()).padStart(2,'0');
-    dates.push(mm+dd2+'更新');
-  }
   const fetchSheet=async(sheetName)=>{
     try{
       const url=`https://docs.google.com/spreadsheets/d/${DON_SHEETS_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
@@ -915,11 +909,10 @@ async function loadDonFromSheets(){
       return(parsed.data&&parsed.data.length>0)?parsed.data:null;
     }catch(e){return null;}
   };
-  const results=await Promise.all(dates.map(fetchSheet));
-  const allRows=[];let loaded=0;const seenKeys=new Set();
-  results.forEach(rows=>{
-    if(!rows)return;
-    // 同一筆捐款可能同時出現在多個「MMDD更新」分頁，以 訂單編號+捐款細項+金額 去重
+  // 同一筆捐款可能重複出現（舊結構跨分頁、新結構重跑匯出），
+  // 一律以 訂單編號+捐款細項+金額 去重。
+  const allRows=[],seenKeys=new Set();
+  const absorb=rows=>{
     let added=0;
     rows.forEach(r=>{
       if(!r['訂單編號'])return;
@@ -927,15 +920,32 @@ async function loadDonFromSheets(){
       if(seenKeys.has(k))return;
       seenKeys.add(k);allRows.push(r);added++;
     });
-    if(added)loaded++;
-  });
+    return added;
+  };
+  let srcLabel='';
+  // ① 新結構：單一彙總分頁
+  const tabs=await Promise.all(DON_TAB_KEYS.map(fetchSheet));
+  const hit=tabs.findIndex(t=>t);
+  if(hit>=0){absorb(tabs[hit]);srcLabel=DON_TAB_KEYS[hit];}
+  // ② 舊結構：MMDD更新 逐日分頁（① 沒抓到東西時才跑）
+  if(!allRows.length){
+    const today=new Date(),start=new Date(2026,8,22),dates=[];
+    for(let d=new Date(start);d<=today;d.setDate(d.getDate()+1)){
+      dates.push(String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'更新');
+    }
+    const results=await Promise.all(dates.map(fetchSheet));
+    let days=0;
+    results.forEach(rows=>{if(rows&&absorb(rows))days++;});
+    if(allRows.length)srcLabel=`MMDD更新 × ${days} 天`;
+  }
   if(allRows.length>0){
     donWb=null;donRows=allRows;
     buildDailyFromAllSources();updateDateRange();
-    document.getElementById('sub-xlsx').textContent=`已從 Sheets 載入（${loaded} 天）`;
+    document.getElementById('sub-xlsx').textContent=`已從 Sheets 載入（${allRows.length} 筆）`;
     document.getElementById('dz-xlsx').classList.add('loaded');
     buildDashboard();
-    if(st){st.textContent=`✓ 載入 ${loaded} 天資料`;st.style.color='#1D9E75';}
+    console.log('[wv] 捐款來源分頁：',srcLabel,'／筆數：',allRows.length);
+    if(st){st.textContent=`✓ 載入 ${allRows.length} 筆捐款`;st.style.color='#1D9E75';}
   }else{
     if(st){st.textContent='載入失敗，請用 .command 開啟儀表板';st.style.color='#c0392b';}
   }
