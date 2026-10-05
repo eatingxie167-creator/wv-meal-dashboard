@@ -125,9 +125,14 @@ const WEEKDAYS=['日','一','二','三','四','五','六'];
 
 const DEFAULT_CONFIG={
   meta:[
-    {label:'Consideration VC',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_consideration_vc'],utmIds:['120243319700390539']},
-    {label:'Action ATC',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_action_atc'],utmIds:['120243319595970539']},
-    {label:'Action Purchase',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_action_purchase'],utmIds:['120243316748250539']},
+    // ⚠ Meta 這三條是「完全比對」活動名稱（Google 那邊用 campNamePattern 模糊比對），
+    //   所以每換一波檔期、活動名稱變了就會整批濾掉、花費顯示 0。
+    //   換波時必須回來補上新的活動名稱與活動 ID（utmIds 是捐款歸因用的）。
+    //   新舊波次並存不會互相汙染，日期區間篩選會自動隔開。
+    {label:'Consideration VC',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_consideration_vc','fb_paid_post_sp_dom_ot_2026_Sep_ccf_consideration_vc'],utmIds:['120243319700390539','120248138387470539']},
+    {label:'Action ATC',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_action_atc','fb_paid_post_sp_dom_ot_2026_Sep_ccf_action_atc'],utmIds:['120243319595970539','120248136988130539']},
+    // ⚠ 本波 action_purchase 在 Meta 後台有兩支同名活動，兩個 ID 都要收，少一個捐款就會漏算。
+    {label:'Action Purchase',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_action_purchase','fb_paid_post_sp_dom_ot_2026_Sep_ccf_action_purchase'],utmIds:['120243316748250539','120248168396080539','120248138375220539']},
   ],
   google:[
     {label:'Pmax',campNames:[],campNamePattern:'pmax',utmContents:['pmax']},
