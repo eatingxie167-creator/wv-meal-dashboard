@@ -133,6 +133,8 @@ const DEFAULT_CONFIG={
     {label:'Action ATC',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_action_atc','fb_paid_post_sp_dom_ot_2026_Sep_ccf_action_atc'],utmIds:['120243319595970539','120248136988130539']},
     // ⚠ 本波 action_purchase 在 Meta 後台有兩支同名活動，兩個 ID 都要收，少一個捐款就會漏算。
     {label:'Action Purchase',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_action_purchase','fb_paid_post_sp_dom_ot_2026_Sep_ccf_action_purchase'],utmIds:['120243316748250539','120248168396080539','120248138375220539']},
+    // 2026/10/05 新增：Purchase 事件壞掉後改用 Donate 事件出價的活動，原 purchase / atc 活動已暫停。
+    {label:'Action Donate',campNames:['fb_paid_post_sp_dom_ot_2026_Sep_ccf_action_donate'],utmIds:['120248186765700539']},
   ],
   google:[
     {label:'Pmax',campNames:[],campNamePattern:'pmax',utmContents:['pmax']},
@@ -1074,7 +1076,10 @@ async function loadMetaFromAPI(){
   const start=new Date(2026,8,22);
   const since=isoDate(start);const until=isoDate(today);
   try{
-    const params=new URLSearchParams({fields:'campaign_name,adset_name,ad_name,spend,actions,action_values',level:'ad',time_increment:'1',time_range:JSON.stringify({since,until}),limit:'500',access_token:token});
+    // ⚠ 一定要同時要 conversions / conversion_values：
+    //   Meta 的 Donate（捐款）事件「不會」出現在 actions 裡，只會出現在 conversions 裡（key = donate_total）。
+    //   只抓 actions 的話捐款次數與轉換價值會全部是 0。
+    const params=new URLSearchParams({fields:'campaign_name,adset_name,ad_name,spend,actions,action_values,conversions,conversion_values',level:'ad',time_increment:'1',time_range:JSON.stringify({since,until}),limit:'500',access_token:token});
     let url=`https://graph.facebook.com/${META_API_VER}/${META_AD_ACCOUNT}/insights?${params}`;
     const allData=[];
     while(url){
@@ -1086,7 +1091,17 @@ async function loadMetaFromAPI(){
     metaAdRows=allData.map(row=>{
       const acts={};(row.actions||[]).forEach(a=>{acts[a.action_type]=parseFloat(a.value)||0;});
       const avs={};(row.action_values||[]).forEach(a=>{avs[a.action_type]=parseFloat(a.value)||0;});
-      return{'分析報告開始':row.date_start,'行銷活動名稱':row.campaign_name,'廣告組合名稱':row.adset_name,'廣告名稱':row.ad_name,'花費金額 (TWD)':parseFloat(row.spend)||0,'連結點擊次數':acts['link_click']||0,'加到購物車次數':acts['omni_add_to_cart']||0,'購買次數':acts['omni_purchase']||0,'轉換價值':avs['omni_purchase']||avs['purchase']||0};
+      const cvs={};(row.conversions||[]).forEach(a=>{cvs[a.action_type]=parseFloat(a.value)||0;});
+      const cvv={};(row.conversion_values||[]).forEach(a=>{cvv[a.action_type]=parseFloat(a.value)||0;});
+      // 捐款次數 = Purchase + Donate 兩種事件相加。
+      //   2026/10 起網站把購買事件改埋成 Donate，Purchase / AddToCart 事件已壞掉；
+      //   查過 2026/06 至今 Meta 從來沒有 purchase_total，兩個事件沒有並存期間，所以相加不會重複計算。
+      //   Purchase 之後若修好，這裡會自動一起算進來，不用再改程式。
+      const donateCnt=cvs['donate_total']||0, donateVal=cvv['donate_total']||0;
+      const purchCnt=acts['omni_purchase']||acts['purchase']||cvs['purchase_total']||0;
+      const purchVal=avs['omni_purchase']||avs['purchase']||cvv['purchase_total']||0;
+      const atcCnt=(acts['omni_add_to_cart']||acts['add_to_cart']||0)+(cvs['add_to_cart_total']||0);
+      return{'分析報告開始':row.date_start,'行銷活動名稱':row.campaign_name,'廣告組合名稱':row.adset_name,'廣告名稱':row.ad_name,'花費金額 (TWD)':parseFloat(row.spend)||0,'連結點擊次數':acts['link_click']||0,'加到購物車次數':atcCnt,'購買次數':purchCnt+donateCnt,'轉換價值':purchVal+donateVal};
     });
     document.getElementById('sub-meta').textContent=`已從 Meta API 載入（${allData.length} 筆）`;
     document.getElementById('dz-meta').classList.add('loaded');
