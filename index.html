@@ -1027,25 +1027,94 @@ function loadLineXlsx(file){
 }
 
 const LINE_SHEETS_ID='1rfHflRL2oioAKOZtN7WsF_tA2csCpN0BAhtizXnRKE8';
+// ── LINE 資料來源說明（LINE 沒有 API，只能讀代操維護的 Google Sheet）──────────────
+// 主來源：`Raw` 分頁 = LINE Ads 後台原始匯出，一列一個廣告一天，有欄位標題，涵蓋所有檔期。
+// 備援＋對帳來源：各檔期的「每日總表」分頁，一個檔期一個分頁，只能用 gid 定位。
+//   2026/10/06 已逐日核對：兩邊的呈現、點擊、花費、ATC、購買完全一致，所以
+//   (1) 重疊日期一律以 Raw 為準，不會重複計算；
+//   (2) Raw 缺的日期才拿總表來補；
+//   (3) 重疊日期若數字不一致會在狀態列標紅警告（代表有一邊沒更新，要人工確認）。
+//   換檔期時代操會新增一個總表分頁，gid 忘了補也不會壞——Raw 本來就涵蓋全部日期。
+const LINE_SUMMARY_GIDS=[
+  '273308132', // 世界展望會_Line Lap_2026.08-09　10/02-10/31
+  '96401905',  // 世界展望會_LAP_2026.06-07　06/01-07/31
+];
+// 每日總表的欄位位置（該表標題是合併儲存格，匯出成 CSV 後標題會消失，只能靠位置讀）
+const LINE_SUM_COL={imp:1,click:2,cost:3,atc:4,purch:5,cpa:6,ctr:7,cpc:8};
+
+function lineNum(v){const s=String(v==null?'':v).replace(/[,%\s]/g,'');const n=parseFloat(s);return isFinite(n)?n:0;}
+async function fetchLineCsv(q){
+  const resp=await fetch(`https://docs.google.com/spreadsheets/d/${LINE_SHEETS_ID}/gviz/tq?tqx=out:csv&${q}`);
+  if(!resp.ok)throw new Error('HTTP '+resp.status);
+  const text=await resp.text();
+  if(!text||text.includes('Visualization: Access denied'))throw new Error('無法存取試算表');
+  return text;
+}
+// Raw 分頁：有標題列，直接用欄位名稱
+function parseLineRaw(text){
+  const parsed=Papa.parse(text,{header:true,skipEmptyLines:true});
+  if(!parsed.data||!parsed.data.length)throw new Error('無資料');
+  if(!('Cost'in parsed.data[0]))throw new Error('找不到 Cost 欄位，分頁結構可能已變更');
+  return parsed.data.map(r=>{
+    const day=r['Day']||'';
+    return{...r,_dayIso:day.match(/\d{4}-\d{2}-\d{2}/)?day.substring(0,10):''};
+  }).filter(r=>r._dayIso);
+}
+// 每日總表分頁：靠位置讀，但用 CPC = 花費 ÷ 點擊 回推驗證欄位有沒有跑掉
+function parseLineSummary(text){
+  const parsed=Papa.parse(text,{header:false,skipEmptyLines:true});
+  const out=[];let checked=0,dateRows=0;
+  (parsed.data||[]).forEach(row=>{
+    const m=String(row[0]||'').trim().match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+    if(!m)return;
+    dateRows++;
+    const iso=`${m[1]}-${String(m[2]).padStart(2,'0')}-${String(m[3]).padStart(2,'0')}`;
+    const imp=lineNum(row[LINE_SUM_COL.imp]),click=lineNum(row[LINE_SUM_COL.click]),cost=lineNum(row[LINE_SUM_COL.cost]);
+    if(!imp&&!click&&!cost)return; // 檔期還沒跑到的未來日期，整列是 0
+    // 欄位位置自我驗證：對不上就不要默默載入錯的數字
+    const cpc=lineNum(row[LINE_SUM_COL.cpc]);
+    if(click>0&&cpc>0){checked++;if(Math.abs(cost/click-cpc)/cpc>0.05)throw new Error('欄位位置驗證失敗（CPC 對不上），分頁結構可能已變更');}
+    out.push({_dayIso:iso,_src:'summary',Day:iso,Impressions:imp,Clicks:click,Cost:cost,
+      AddToCart:lineNum(row[LINE_SUM_COL.atc]),Purchase:lineNum(row[LINE_SUM_COL.purch])});
+  });
+  // 第一欄完全找不到日期 → 結構被動過（例如前面被插入欄位），要出聲而不是靜默回傳空陣列。
+  // dateRows>0 但 out 為空是正常的：檔期還沒開跑，整張表都是 0。
+  if(!dateRows)throw new Error('第一欄找不到任何日期，分頁結構可能已變更');
+  if(out.length&&!checked)throw new Error('無法驗證欄位位置');
+  return out;
+}
 async function loadLineFromSheets(){
   const st=document.getElementById('sheets-status-line');
   if(st){st.textContent='載入中…';st.style.color='var(--color-text-secondary)';}
   try{
-    const url=`https://docs.google.com/spreadsheets/d/${LINE_SHEETS_ID}/gviz/tq?tqx=out:csv&sheet=Raw`;
-    const resp=await fetch(url);
-    if(!resp.ok)throw new Error('HTTP '+resp.status);
-    const text=await resp.text();
-    if(!text||text.includes('Visualization: Access denied'))throw new Error('無法存取試算表');
-    const parsed=Papa.parse(text,{header:true,skipEmptyLines:true});
-    if(!parsed.data||!parsed.data.length)throw new Error('無資料');
-    lineAdRows=parsed.data.map(r=>{
-      const day=r['Day']||'';
-      const iso=day.match(/\d{4}-\d{2}-\d{2}/)?day.substring(0,10):'';
-      return{...r,_dayIso:iso};
-    });
+    let rows=[];const notes=[];let warn=false;
+    // 1) 主來源 Raw
+    try{rows=parseLineRaw(await fetchLineCsv('sheet=Raw'));notes.push(`Raw ${rows.length} 筆`);}
+    catch(e){notes.push(`⚠ Raw 讀取失敗（${e.message}）`);warn=true;}
+    // 2) 各檔期總表：對帳 + 補 Raw 沒有的日期
+    const rawDay={};rows.forEach(r=>{rawDay[r._dayIso]=(rawDay[r._dayIso]||0)+lineNum(r['Cost']);});
+    let added=0,badTabs=0;const diffDays=[];
+    for(const gid of LINE_SUMMARY_GIDS){
+      let sum=[];
+      try{sum=await fetchLineCsv('gid='+gid).then(parseLineSummary);}
+      catch(e){badTabs++;continue;}
+      sum.forEach(r=>{
+        if(rawDay[r._dayIso]===undefined){rows.push(r);rawDay[r._dayIso]=r.Cost;added++;}
+        else if(Math.round(rawDay[r._dayIso])!==Math.round(r.Cost))diffDays.push(r._dayIso); // 重疊日期以 Raw 為準，只回報差異
+      });
+    }
+    if(added)notes.push(`總表補 ${added} 天`);
+    if(diffDays.length){
+      diffDays.sort();
+      const shown=diffDays.slice(0,3).join('、')+(diffDays.length>3?` 等 ${diffDays.length} 天`:'');
+      notes.push(`⚠ ${shown} 與每日總表花費不一致（已採用 Raw）`);warn=true;
+    }
+    if(badTabs){notes.push(`⚠ ${badTabs} 個總表分頁讀不到`);warn=true;}
+    if(!rows.length)throw new Error('Raw 與每日總表都沒有資料');
+    lineAdRows=rows;
     document.getElementById('sub-line').textContent='已從 Sheets 載入';
     document.getElementById('dz-line').classList.add('loaded');
-    if(st){st.textContent='✓ 載入成功';st.style.color='#1D9E75';}
+    if(st){st.textContent=(warn?'⚠ ':'✓ ')+notes.join('、');st.style.color=warn?'#c0392b':'#1D9E75';}
     buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();
   }catch(e){
     if(st){st.textContent='載入失敗：'+e.message;st.style.color='#c0392b';}
