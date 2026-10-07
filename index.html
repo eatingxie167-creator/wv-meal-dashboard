@@ -598,6 +598,29 @@ function aggCampStats(src,camp,filtAd,allDonRows,campDonFilter){
   return campStats(spend,click,atc,purch,don,convv);
 }
 
+// Meta 限定：在活動表最後補一列「未標記 utm_id」。
+//   Meta 的 utm_id / utm_term 是平台自動帶的動態參數，只有部分版位會帶上，
+//   所以同一支廣告（同一組 utm_content）會有一部分捐款完全沒有 utm_id
+//   （2026/10/02-10/04 實測：19 筆 facebook 捐款有 7 筆沒有 utm_id）。
+//   廣告自己設的 url_tags 是 utm_content={{adset.name}}_{{ad.name}}_action，
+//   而 atc / purchase / donate 三個活動的 TA/OT 組合完全重疊
+//   （已用 Graph API 比對：190 組 utm_content 裡有 74 組對應到多個活動），
+//   所以無法從 utm_content 反推是哪個活動。這裡不猜測歸屬、單獨列一行，
+//   活動表合計才會跟「每日明細」和「總覽」對得起來（否則會少算）。
+function addMetaUnmatchedRow(src,cfg,campRows,allDon,prevAllDon){
+  if(src!=='meta')return;
+  const noId=rows=>(rows||[]).filter(r=>{
+    const p=String(r['來源參數']||'');
+    if(!p.includes('utm_source=facebook'))return false;
+    return !cfg.some(c=>(c.utmIds||[]).some(id=>p.includes('utm_id='+id)));
+  });
+  const un=noId(allDon);
+  if(!un.length)return;
+  const prevUn=noId(prevAllDon);
+  campRows.push({label:'未標記 utm_id',...campStats(0,0,0,0,un,0),
+    prev:prevUn.length?campStats(0,0,0,0,prevUn,0):null});
+}
+
 function buildMediaSection(src,cfg,adRows,filtAd,allDon,filt,donFilter,campDonFilter,prevFiltAd,prevAllDon){
   if(!adRows)return`<div class="hint"><i class="ti ti-info-circle" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>上傳廣告成效檔案後顯示整合表</div>`;
   // 廣告活動總表
@@ -606,6 +629,7 @@ function buildMediaSection(src,cfg,adRows,filtAd,allDon,filt,donFilter,campDonFi
     const prev=prevFiltAd?aggCampStats(src,camp,prevFiltAd,prevAllDon||[],campDonFilter):null;
     return{label:camp.label,...cur,prev};
   });
+  addMetaUnmatchedRow(src,cfg,campRows,allDon,prevAllDon);
   let html=buildCampTable(campRows);
   // 每日整體明細
   const dailyAll=getDailyStats(filt,src,donFilter);
@@ -721,6 +745,7 @@ function buildAdSection(){
         const prev=m.prevFiltAd?aggCampStats(m.src,camp,m.prevFiltAd,prevAllDon,m.campDonFilter):null;
         return{label:camp.label,...cur,prev};
       });
+      addMetaUnmatchedRow(m.src,m.cfg,campRows,allDon,prevAllDon);
       html+=buildCampTable(campRows);
     });
   }
