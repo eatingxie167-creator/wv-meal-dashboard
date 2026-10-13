@@ -125,14 +125,18 @@ const WEEKDAYS=['日','一','二','三','四','五','六'];
 
 const DEFAULT_CONFIG={
   meta:[
-    // ⚠ Meta 這三條是「完全比對」活動名稱（Google 那邊用 campNamePattern 模糊比對），
+    // ⚠ Meta 這幾條是「完全比對」活動名稱（Google 那邊用 campNamePattern 模糊比對），
     //   所以每換一波檔期、活動名稱變了就會整批濾掉、花費顯示 0。
     //   換波時必須回來補上新的活動名稱與活動 ID（utmIds 是捐款歸因用的）。
-    //   新舊波次並存不會互相汙染，日期區間篩選會自動隔開。
-    {label:'Consideration VC',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_consideration_vc','fb_paid_post_sp_dom_ot_2026_Sep_ccf_consideration_vc'],utmIds:['120243319700390539','120248138387470539']},
-    {label:'Action ATC',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_action_atc','fb_paid_post_sp_dom_ot_2026_Sep_ccf_action_atc'],utmIds:['120243319595970539','120248136988130539']},
+    //
+    // ⚠ 只能放溫暖送餐（`sp_dom_ot`）的活動。原本這裡還掛著兒捐（`sp_dom`）
+    //   2026_Jun 那一波的活動名稱與 utmIds，理由是「日期區間篩選會自動隔開」——
+    //   但兒捐已於 2026-10-12 在同一個廣告帳號重啟，日期不再能隔開兩個專案，
+    //   那個假設已經失效，所以全部移除。兒捐的數據請看 donation-dashboard。
+    {label:'Consideration VC',campNames:['fb_paid_post_sp_dom_ot_2026_Sep_ccf_consideration_vc'],utmIds:['120248138387470539']},
+    {label:'Action ATC',campNames:['fb_paid_post_sp_dom_ot_2026_Sep_ccf_action_atc'],utmIds:['120248136988130539']},
     // ⚠ 本波 action_purchase 在 Meta 後台有兩支同名活動，兩個 ID 都要收，少一個捐款就會漏算。
-    {label:'Action Purchase',campNames:['fb_paid_post_sp_dom_2026_Jun_ccf_action_purchase','fb_paid_post_sp_dom_ot_2026_Sep_ccf_action_purchase'],utmIds:['120243316748250539','120248168396080539','120248138375220539']},
+    {label:'Action Purchase',campNames:['fb_paid_post_sp_dom_ot_2026_Sep_ccf_action_purchase'],utmIds:['120248168396080539','120248138375220539']},
     // 2026/10/05 新增：Purchase 事件壞掉後改用 Donate 事件出價的活動，原 purchase / atc 活動已暫停。
     {label:'Action Donate',campNames:['fb_paid_post_sp_dom_ot_2026_Sep_ccf_action_donate'],utmIds:['120248186765700539']},
   ],
@@ -224,10 +228,27 @@ function matchMeta(row,camp){const p=String(row['來源參數']||'');if(!p.inclu
 function matchGoogle(row,camp){const p=String(row['來源參數']||'');if(!p.includes('utm_source=google'))return false;const m=p.match(/utm_content=([^&]*)/);if(!m)return false;const c=m[1].toLowerCase();return camp.utmContents.some(kw=>c.includes(kw.toLowerCase()));}
 function matchLine(row){return String(row['來源參數']||'').includes('utm_source=line');}
 
+// 這個廣告帳號（act_1962319981371840）同時跑兩個專案，必須靠活動名稱分開：
+//   溫暖送餐（本儀表板） = ..._sp_dom_ot_2026_...
+//   兒童資助／兒捐       = ..._sp_dom_2026_...      ← 2026-10-12 重啟
+// ⚠ `sp_dom` 是 `sp_dom_ot` 的前綴，關鍵字一定要帶到 `_ot_2026` 才分得開。
+// Google 的活動比對用 campNamePattern（'pmax' / 'ccf_brand' / 'dgc'）模糊比對，
+// 本身完全不含專案代號，所以一定要再加這一層，否則兒捐的花費會被加進送餐的
+// Pmax／品牌字／Demandgen，ROAS 分母跟著被墊高。
+// google_daily.csv 的產出端（build_google_csv.py）已經先濾過一次，這裡是第二層
+// 保險——手動拖曳上傳 CSV 的路徑不會經過產出端的篩選。
+const GOO_PROJECT_TOKEN='_sp_dom_ot_2026';
+function matchGooCamp(name,camp){
+  const n=String(name||'').toLowerCase();
+  if(!n.includes(GOO_PROJECT_TOKEN))return false;
+  return camp.campNamePattern?n.includes(camp.campNamePattern):(camp.campNames||[]).includes(name);
+}
+function matchGooAny(name){return CONFIG.google.some(c=>matchGooCamp(name,c));}
+
 function adSpendBySource(from,to,src){
   let s=0;
   if((src==='meta'||src==='total')&&metaAdRows){const ns=CONFIG.meta.flatMap(c=>c.campNames);metaAdRows.filter(r=>{const dt=r['分析報告開始']||'';return dt>=from&&dt<=to&&ns.includes(r['行銷活動名稱']);}).forEach(r=>{s+=(+r['花費金額 (TWD)']||0);});}
-  if((src==='google'||src==='total')&&gooAdRows){gooAdRows.filter(r=>{const dt=r['日期']||'';if(dt<from||dt>to)return false;const name=String(r['廣告活動']||'');return CONFIG.google.some(c=>c.campNamePattern?name.toLowerCase().includes(c.campNamePattern):(c.campNames||[]).includes(name));}).forEach(r=>{s+=numVal(r['費用']);});}
+  if((src==='google'||src==='total')&&gooAdRows){gooAdRows.filter(r=>{const dt=r['日期']||'';if(dt<from||dt>to)return false;return matchGooAny(r['廣告活動']);}).forEach(r=>{s+=numVal(r['費用']);});}
   if((src==='line'||src==='total')&&lineAdRows){lineAdRows.filter(r=>{const dt=r['_dayIso']||'';return dt>=from&&dt<=to;}).forEach(r=>{s+=numVal(r['Cost']);});}
   return s;
 }
@@ -244,7 +265,7 @@ function adByDay(iso,src,field){
   const gooField={'spend':'費用','click':'點擊','atc':'ATC-點擊送餐按鈕','purch':'Purchase-完成捐款','convv':'轉換價值'};
   const lineField={'spend':'Cost','click':'Clicks','atc':'AddToCart','purch':'Purchase','convv':'ConvValue'};
   if((src==='meta'||src==='total')&&metaAdRows){const ns=CONFIG.meta.flatMap(c=>c.campNames);metaAdRows.filter(r=>r['分析報告開始']===iso&&ns.includes(r['行銷活動名稱'])).forEach(r=>{s+=numVal(r[metaField[field]]);});}
-  if((src==='google'||src==='total')&&gooAdRows){gooAdRows.filter(r=>{if(r['日期']!==iso)return false;const name=String(r['廣告活動']||'');return CONFIG.google.some(c=>c.campNamePattern?name.toLowerCase().includes(c.campNamePattern):(c.campNames||[]).includes(name));}).forEach(r=>{s+=numVal(r[gooField[field]]);});}
+  if((src==='google'||src==='total')&&gooAdRows){gooAdRows.filter(r=>{if(r['日期']!==iso)return false;return matchGooAny(r['廣告活動']);}).forEach(r=>{s+=numVal(r[gooField[field]]);});}
   if((src==='line'||src==='total')&&lineAdRows){lineAdRows.filter(r=>r['_dayIso']===iso).forEach(r=>{s+=(field==='convv')?lineVal(r):numVal(r[lineField[field]]);});}
   return s;
 }
@@ -255,7 +276,7 @@ function adCampByDay(iso,camp,src){
   const campNames=camp.campNames||[];
   let spend=0,click=0,atc=0,purch=0,convv=0;
   if(src==='meta'&&metaAdRows){metaAdRows.filter(r=>r['分析報告開始']===iso&&campNames.includes(r['行銷活動名稱'])).forEach(r=>{spend+=numVal(r['花費金額 (TWD)']);click+=numVal(r['連結點擊次數']);atc+=numVal(r['加到購物車次數']);purch+=numVal(r['購買次數']);convv+=numVal(r['轉換價值']);});}
-  if(src==='google'&&gooAdRows){gooAdRows.filter(r=>{if(r['日期']!==iso)return false;const name=String(r['廣告活動']||'');return camp.campNamePattern?name.toLowerCase().includes(camp.campNamePattern):campNames.includes(name);}).forEach(r=>{spend+=numVal(r['費用']);click+=numVal(r['點擊']);atc+=numVal(r['ATC-點擊送餐按鈕']);purch+=numVal(r['Purchase-完成捐款']);convv+=numVal(r['轉換價值']);});}
+  if(src==='google'&&gooAdRows){gooAdRows.filter(r=>{if(r['日期']!==iso)return false;return matchGooCamp(r['廣告活動'],camp);}).forEach(r=>{spend+=numVal(r['費用']);click+=numVal(r['點擊']);atc+=numVal(r['ATC-點擊送餐按鈕']);purch+=numVal(r['Purchase-完成捐款']);convv+=numVal(r['轉換價值']);});}
   if(src==='line'&&lineAdRows){lineAdRows.filter(r=>r['_dayIso']===iso).forEach(r=>{spend+=numVal(r['Cost']);click+=numVal(r['Clicks']);atc+=numVal(r['AddToCart']);purch+=numVal(r['Purchase']);convv+=lineVal(r);});}
   return{spend,click,atc,purch,convv};
 }
@@ -588,7 +609,7 @@ document.addEventListener('click',e=>{
 });
 
 function aggCampStats(src,camp,filtAd,allDonRows,campDonFilter){
-  const campKey=src==='meta'?'行銷活動名稱':'廣告活動';const ca=src==='line'?filtAd:(camp.campNamePattern?filtAd.filter(r=>String(r[campKey]||'').toLowerCase().includes(camp.campNamePattern)):filtAd.filter(r=>(camp.campNames||[]).includes(r[campKey])));
+  const campKey=src==='meta'?'行銷活動名稱':'廣告活動';const ca=src==='line'?filtAd:(src==='google'?filtAd.filter(r=>matchGooCamp(r[campKey],camp)):filtAd.filter(r=>(camp.campNames||[]).includes(r[campKey])));
   const don=allDonRows.filter(r=>campDonFilter(r,camp));
   const spend=src==='meta'?ca.reduce((s,r)=>s+(+r['花費金額 (TWD)']||0),0):src==='google'?ca.reduce((s,r)=>s+numVal(r['費用']),0):filtAd.reduce((s,r)=>s+numVal(r['Cost']),0);
   const click=src==='meta'?ca.reduce((s,r)=>s+(+r['連結點擊次數']||0),0):src==='google'?ca.reduce((s,r)=>s+numVal(r['點擊']),0):filtAd.reduce((s,r)=>s+numVal(r['Clicks']),0);
