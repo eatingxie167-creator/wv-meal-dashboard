@@ -37,6 +37,16 @@ API_VERSION = "v22"
 # 本波起始日。wv_daily 從 6/01 一路累積，但這支只輸出本波，
 # 免得上一波（兒童月捐）的花費混進 ROAS 分母。
 START_DATE = "2026-09-22"
+
+# ⚠ 這個廣告帳號同時跑「溫暖送餐」與「兒童資助（兒捐）」兩個專案，
+#   必須靠活動名稱分開，光靠日期已經分不開了（兒捐 2026-10-12 重啟）。
+#     送餐 = ..._sp_dom_ot_2026_...
+#     兒捐 = ..._sp_dom_2026_...
+#   注意 `sp_dom` 是 `sp_dom_ot` 的前綴，用 'sp_dom' 當關鍵字會把兩個專案
+#   都撈進來；一定要帶後面的 `_ot_2026` / `_2026` 才分得開。
+PROJECT_TOKEN = "_sp_dom_ot_2026"
+# 同帳號的其他專案 token，純粹用來在 --check 時提醒有多少列被濾掉。
+OTHER_PROJECT_TOKENS = ["_sp_dom_2026"]
 # ⚠ GAQL 的 segments.date 不接受單邊條件，只寫 >= 會靜默回傳 0 筆，
 #   必須給完整區間。結束日取今天（API 端沒有未來資料，多給無妨）。
 END_DATE = datetime.date.today().isoformat()
@@ -135,12 +145,22 @@ def build(query):
     table = defaultdict(lambda: {"imp": 0, "clk": 0, "cost": 0.0,
                                  "conv": defaultdict(float), "val": defaultdict(float)})
 
+    # ⚠ GAQL 的 LIKE 會把 `_` 當成「任一個字元」的萬用字元，所以這個條件只能
+    #   用來「縮小範圍」，不能當成精確比對；真正把關的是下面 Python 端的
+    #   `PROJECT_TOKEN not in name` 檢查（字串語意，不會誤判）。
+    #   兩層都留著：LIKE 省傳輸量，Python 保證正確。
+    scoped = f"AND campaign.name LIKE '%{PROJECT_TOKEN}%'"
+    skipped = defaultdict(int)
+
     for r in query(
         "SELECT campaign.name, segments.date, metrics.impressions, "
         "metrics.clicks, metrics.cost_micros FROM campaign "
         f"WHERE segments.date BETWEEN '{START_DATE}' AND '{END_DATE}' "
-        "AND metrics.impressions > 0"
+        f"AND metrics.impressions > 0 {scoped}"
     ):
+        if PROJECT_TOKEN not in r["campaign"]["name"]:
+            skipped[r["campaign"]["name"]] += 1
+            continue
         row = table[(r["campaign"]["name"], r["segments"]["date"])]
         m = r["metrics"]
         row["imp"] += int(m.get("impressions", 0))
@@ -152,15 +172,23 @@ def build(query):
     for r in query(
         "SELECT campaign.name, segments.date, segments.conversion_action_name, "
         "metrics.all_conversions, metrics.all_conversions_value FROM campaign "
-        f"WHERE segments.date BETWEEN '{START_DATE}' AND '{END_DATE}'"
+        f"WHERE segments.date BETWEEN '{START_DATE}' AND '{END_DATE}' {scoped}"
     ):
         name = r["segments"].get("conversionActionName", "")
         if name not in ACTIONS:
+            continue
+        if PROJECT_TOKEN not in r["campaign"]["name"]:
+            skipped[r["campaign"]["name"]] += 1
             continue
         row = table[(r["campaign"]["name"], r["segments"]["date"])]
         m = r["metrics"]
         row["conv"][name] += float(m.get("allConversions", 0))
         row["val"][name] += float(m.get("allConversionsValue", 0))
+
+    if skipped:
+        print("已濾掉不屬於本專案的活動（LIKE 漏過來的）：")
+        for n, c in sorted(skipped.items()):
+            print(f"    {c:>5} 列  {n}")
 
     records = []
     for (camp, day) in sorted(table):
