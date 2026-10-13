@@ -1067,7 +1067,7 @@ function loadLineXlsx(file){
     const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true});
     const ws=wb.Sheets['Raw'];if(!ws){alert('找不到 Raw 分頁');return;}
     const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
-    lineAdRows=rows.map(r=>{let day=r['Day'],iso='';if(day instanceof Date)iso=isoDate(day);else if(typeof day==='string'&&day.match(/\d{4}-\d{2}-\d{2}/))iso=day.substring(0,10);else if(typeof day==='number'){const d=new Date(Math.round((day-25569)*86400*1000));iso=isoDate(d);}return{...r,_dayIso:iso};});
+    lineAdRows=filterLineRaw(rows.map(r=>{let day=r['Day'],iso='';if(day instanceof Date)iso=isoDate(day);else if(typeof day==='string'&&day.match(/\d{4}-\d{2}-\d{2}/))iso=day.substring(0,10);else if(typeof day==='number'){const d=new Date(Math.round((day-25569)*86400*1000));iso=isoDate(d);}return{...r,_dayIso:iso};}));
     document.getElementById('sub-line').textContent=file.name;document.getElementById('dz-line').classList.add('loaded');buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();
   };r.readAsArrayBuffer(file);
 }
@@ -1081,10 +1081,35 @@ const LINE_SHEETS_ID='1rfHflRL2oioAKOZtN7WsF_tA2csCpN0BAhtizXnRKE8';
 //   (2) Raw 缺的日期才拿總表來補；
 //   (3) 重疊日期若數字不一致會在狀態列標紅警告（代表有一邊沒更新，要人工確認）。
 //   換檔期時代操會新增一個總表分頁，gid 忘了補也不會壞——Raw 本來就涵蓋全部日期。
+// ⚠ 這張 Sheet 是「兩個專案共用」的（兒捐的 donation-dashboard 讀同一份），
+//   所以總表分頁只能放溫暖送餐的檔期。
+//   `世界展望會_LAP_2026.06-07　06/01-07/31`（gid 96401905）是兒童資助／兒捐
+//   那一波，已經移除——留著會讓送餐的日期軸一路拉回 6/01 並吃到兒捐的花費。
 const LINE_SUMMARY_GIDS=[
-  '273308132', // 世界展望會_Line Lap_2026.08-09　10/02-10/31
-  '96401905',  // 世界展望會_LAP_2026.06-07　06/01-07/31
+  '273308132', // 世界展望會_Line Lap_2026.08-09　10/02-10/31（送餐，PA2608635）
 ];
+
+// ⚠⚠ Raw 分頁同樣是兩個專案混在一起，而 LINE 的活動名稱沒有 sp_dom / sp_dom_ot
+//     可以認（長這樣：`1002_1031_ PA2608635_100,000_CPC_3,225_Nutrition`），
+//     能分的是「廣告名稱前綴」：
+//       OT… = 溫暖送餐（本儀表板）  例：OT01_便當_1080、OT11_咖哩_600
+//       SP… = 兒童資助／兒捐        例：SP01_翠屏_1080、SP33_玹玹_1200
+//     實測 6,388 列可以 100% 乾淨切開（OT 969 列 / SP 5,419 列，沒有例外）。
+//     目前兒捐的 LINE 只跑到 2026-08-27、落在本檔期（9/22 起）之外，所以還沒造成
+//     數字錯誤；但兒捐 10 月的 LINE 檔期即將開始，到時候沒有這道過濾就會直接污染。
+//     在載入這一層就濾掉，lineAdRows 之後所有用到的地方（含日期軸）就都乾淨了。
+const LINE_AD_PREFIX=/^OT/i;
+function filterLineRaw(rows){
+  const keep=[],drop={};
+  rows.forEach(r=>{
+    const n=String(r['Ad name']||'');
+    if(LINE_AD_PREFIX.test(n))keep.push(r);
+    else{const k=String(r['Campaign name']||'(無活動名)');drop[k]=(drop[k]||0)+1;}
+  });
+  if(Object.keys(drop).length)console.warn('[LINE] 已濾掉不屬於本專案（廣告名非 OT 開頭）的列：',drop);
+  if(rows.length&&!keep.length)console.error('[LINE] Raw 裡沒有任何 OT 開頭的廣告，請確認命名規則是否改了');
+  return keep;
+}
 // 每日總表的欄位位置（該表標題是合併儲存格，匯出成 CSV 後標題會消失，只能靠位置讀）
 const LINE_SUM_COL={imp:1,click:2,cost:3,atc:4,purch:5,cpa:6,ctr:7,cpc:8};
 
@@ -1097,13 +1122,22 @@ async function fetchLineCsv(q){
   return text;
 }
 // Raw 分頁：有標題列，直接用欄位名稱
+// ⚠⚠ 千萬不要用 Papa 的 header:true。這張表的標題列是「23 個真欄位 + 21 個空白欄位（""）」，
+//     Papa 在 header 模式下會判成 InvalidQuotes（實測同一份資料吐 6,389 個錯誤），
+//     把 6,388 列吃成 6,387 列——固定少掉 2026-10-02 的 OT42_放假_1080（$38.24），
+//     剛好就是狀態列那句「與每日總表花費不一致」的全部成因。
+//     改成 header:false 自己組物件：同一份資料 0 個錯誤、6,388 列完整。
 function parseLineRaw(text){
-  const parsed=Papa.parse(text,{header:true,skipEmptyLines:true});
-  if(!parsed.data||!parsed.data.length)throw new Error('無資料');
-  if(!('Cost'in parsed.data[0]))throw new Error('找不到 Cost 欄位，分頁結構可能已變更');
-  return parsed.data.map(r=>{
-    const day=r['Day']||'';
-    return{...r,_dayIso:day.match(/\d{4}-\d{2}-\d{2}/)?day.substring(0,10):''};
+  const parsed=Papa.parse(text,{header:false,skipEmptyLines:true});
+  const cells=parsed.data||[];
+  if(cells.length<2)throw new Error('無資料');
+  const hdr=cells[0].map(h=>String(h||'').trim());
+  if(!hdr.includes('Cost'))throw new Error('找不到 Cost 欄位，分頁結構可能已變更');
+  return cells.slice(1).map(row=>{
+    const o={};hdr.forEach((h,i)=>{if(h)o[h]=row[i];});
+    const day=o['Day']||'';
+    o._dayIso=day.match(/\d{4}-\d{2}-\d{2}/)?day.substring(0,10):'';
+    return o;
   }).filter(r=>r._dayIso);
 }
 // 每日總表分頁：靠位置讀，但用 CPC = 花費 ÷ 點擊 回推驗證欄位有沒有跑掉
@@ -1135,7 +1169,7 @@ async function loadLineFromSheets(){
   try{
     let rows=[];const notes=[];let warn=false;
     // 1) 主來源 Raw
-    try{rows=parseLineRaw(await fetchLineCsv('sheet=Raw'));notes.push(`Raw ${rows.length} 筆`);}
+    try{rows=filterLineRaw(parseLineRaw(await fetchLineCsv('sheet=Raw')));notes.push(`Raw ${rows.length} 筆`);}
     catch(e){notes.push(`⚠ Raw 讀取失敗（${e.message}）`);warn=true;}
     // 2) 各檔期總表：對帳 + 補 Raw 沒有的日期
     const rawDay={};rows.forEach(r=>{rawDay[r._dayIso]=(rawDay[r._dayIso]||0)+lineNum(r['Cost']);});

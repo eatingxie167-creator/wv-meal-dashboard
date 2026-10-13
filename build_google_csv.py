@@ -54,6 +54,20 @@ END_DATE = datetime.date.today().isoformat()
 # 轉換動作 -> CSV 欄位前綴。順序即欄位順序，與 wv_daily 一致。
 ACTIONS = ["加入購物車", "聯絡人", "註冊", "購買", "開始結帳"]
 
+# ⚠ 這個帳號的「加入購物車」轉換動作實際上有兩個名字，而且名字跟專案對不起來：
+#     兒童資助_加入購物車 → 幾乎不會觸發（2026-06~10 整個帳號只有 9 次，
+#                          兩個專案都一樣少），應該是建了但沒正確埋在頁面上。
+#     營養餐食_加入購物車 → 兩個專案真正在用的那一個
+#                          （同期：送餐 653.8 次、兒捐 2,359.2 次）。
+#   ACTIONS 原本只寫 '加入購物車'，跟上面任何一個名字都對不上，所以 CSV 的
+#   「加入購物車」欄位一路是 0 也不會報錯（實測 131 列全為 0，真實值 653.8）。
+#   每一列都已經是「單一活動 × 單一天」的數據，所以在同一列把兩個動作加總
+#   不會混到另一個專案，只是把同一個活動被拆成兩個轉換動作的 ATC 併回來。
+ACTION_ALIASES = {
+    "兒童資助_加入購物車": "加入購物車",
+    "營養餐食_加入購物車": "加入購物車",
+}
+
 HEADER = (
     ["Campaign Name", "Day", "Impressions", "Clicks", "Cost"]
     + ACTIONS
@@ -175,6 +189,7 @@ def build(query):
         f"WHERE segments.date BETWEEN '{START_DATE}' AND '{END_DATE}' {scoped}"
     ):
         name = r["segments"].get("conversionActionName", "")
+        name = ACTION_ALIASES.get(name, name)
         if name not in ACTIONS:
             continue
         if PROJECT_TOKEN not in r["campaign"]["name"]:
