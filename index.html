@@ -237,13 +237,31 @@ function matchLine(row){return String(row['來源參數']||'').includes('utm_sou
 // Pmax／品牌字／Demandgen，ROAS 分母跟著被墊高。
 // google_daily.csv 的產出端（build_google_csv.py）已經先濾過一次，這裡是第二層
 // 保險——手動拖曳上傳 CSV 的路徑不會經過產出端的篩選。
-const GOO_PROJECT_TOKEN='_sp_dom_ot_2026';
+// Meta 也共用這個 token（API 端的 filtering 與 filterMetaRows 都用它）。
+const PROJECT_TOKEN='_sp_dom_ot_2026';
 function matchGooCamp(name,camp){
   const n=String(name||'').toLowerCase();
-  if(!n.includes(GOO_PROJECT_TOKEN))return false;
+  if(!n.includes(PROJECT_TOKEN))return false;
   return camp.campNamePattern?n.includes(camp.campNamePattern):(camp.campNames||[]).includes(name);
 }
 function matchGooAny(name){return CONFIG.google.some(c=>matchGooCamp(name,c));}
+
+// ⚠ 兒捐 2026-10-12 在同一個帳號重啟後，它的廣告（SP261006…）會混進
+//   metaAdRows，雖然活動名稱對不上 CONFIG 所以數字是 0，但「受眾明細」的
+//   TA 按鈕與「素材明細」的列是直接從 metaAdRows 掃出來的，不過濾就會憑空
+//   多出一整批全 0 的列。API 端已用 filtering 擋掉一次，這裡是第二層——
+//   手動拖曳上傳 CSV 的路徑不會經過 API 的 filtering。
+function filterMetaRows(rows){
+  const keep=[],drop={};
+  rows.forEach(r=>{
+    const n=String(r['行銷活動名稱']||'');
+    if(n.toLowerCase().includes(PROJECT_TOKEN))keep.push(r);
+    else{const k=n||'(無活動名)';drop[k]=(drop[k]||0)+1;}
+  });
+  if(Object.keys(drop).length)console.warn('[Meta] 已濾掉不屬於溫暖送餐的活動：',drop);
+  if(rows.length&&!keep.length)console.error('[Meta] 整批資料沒有任何溫暖送餐的活動，請確認活動命名是否改了');
+  return keep;
+}
 
 function adSpendBySource(from,to,src){
   let s=0;
@@ -441,17 +459,28 @@ function getCampDailyStats(filt,src,camp,donFilter){
   });
 }
 
-// 標準化 TA/SP：統一轉成兩位數 TA01, SP01
+// 標準化 TA（受眾）/ OT（素材）：統一轉成兩位數 TA01, OT01
+//
+// ⚠ 素材代號在這個專案是 `OT##`，不是 `SP##`。
+//   這份儀表板是從兒捐那份複製來的，兒捐的素材代號才是 `SP##`
+//   （例：SP01_翠屏_1080、SP261006），複製過來時沒改，所以「素材明細」
+//   一直比對不到任何東西——2026-10-12 兒捐在同帳號重啟之前，這張表都是
+//   「無素材數據」；重啟之後反而冒出 SP261006~SP261009 四列全 0 的兒捐素材。
+//   溫暖送餐四個資料來源全部都用 OT##，已逐一確認：
+//       Meta 廣告名稱     OT01 / OT11 / OT31 / OT42
+//       Meta utm_content  TA1_OT42_action
+//       Google utm_content gsm_ot43_brand_action   ← 小寫，所以正則要加 /i
+//       LINE utm_content  TA04_OT01_lpv（LINE 廣告名稱則是 OT42_放假_1080）
 function normalizeTA(s){if(!s)return null;const m=String(s).match(/TA(\d+)/i);if(!m)return null;return'TA'+m[1].padStart(2,'0');}
-function normalizeSP(s){if(!s)return null;const m=String(s).match(/SP(\d+)(-\d+)?/i);if(!m)return null;return'SP'+m[1].padStart(2,'0')+(m[2]||'');}
+function normalizeOT(s){if(!s)return null;const m=String(s).match(/OT(\d+)(-\d+)?/i);if(!m)return null;return'OT'+m[1].padStart(2,'0')+(m[2]||'');}
 
 function parseTA(utmContent){return normalizeTA(utmContent);}
-function parseSP(utmContent){return normalizeSP(utmContent);}
+function parseOT(utmContent){return normalizeOT(utmContent);}
 function getUtmContent(row){const p=String(row['來源參數']||'');const m=p.match(/utm_content=([^&]*)/);return m?m[1]:'';}
 
-// 從廣告報表廣告組合名稱/廣告名稱解析 TA/SP（同樣標準化）
+// 從廣告報表廣告組合名稱/廣告名稱解析 TA/OT（同樣標準化）
 function parseTAFromAdset(name){return normalizeTA(name);}
-function parseSPFromAd(name){return normalizeSP(name);}
+function parseOTFromAd(name){return normalizeOT(name);}
 
 function buildAudienceTable(filtAd,allDon,selectedCamps,cfg){
   // 收集所有 TA
@@ -477,7 +506,10 @@ function buildAudienceTable(filtAd,allDon,selectedCamps,cfg){
     const click=ca.reduce((s,r)=>s+(+r['連結點擊次數']||0),0);
     const atc=ca.reduce((s,r)=>s+(+r['加到購物車次數']||0),0);
     const purch=ca.reduce((s,r)=>s+(+r['購買次數']||0),0);
-    return{label:ta,...campStats(spend,click,atc,purch,don)};
+    // ⚠ campStats 的第 6 個參數是「廣告系統回報的轉換價值」，漏傳的話
+    //   「捐款價值」會固定顯示 $0、「捐款ROAS（廣告系統）」固定 0.00。
+    const convv=ca.reduce((s,r)=>s+(+r['轉換價值']||0),0);
+    return{label:ta,...campStats(spend,click,atc,purch,don,convv)};
   });
   return buildCampTable(rows);
 }
@@ -488,9 +520,19 @@ function buildCreativeTable(filtAd,allDon,selectedCamps,cfg,selectedTA){
   const filtAdTA=selectedTA?filtAd.filter(r=>parseTAFromAdset(r['廣告組合名稱'])===selectedTA):filtAd;
 
   const spSet=new Set();
-  filtAdTA.forEach(r=>{const sp=parseSPFromAd(r['廣告名稱']);if(sp)spSet.add(sp);});
+  // 只從「選中活動」的廣告列收素材代號，不然別的專案／沒選到的活動會
+  // 冒出一整排全 0 的列。
+  filtAdTA.forEach(r=>{if(!selCampNames.includes(r['行銷活動名稱']))return;const sp=parseOTFromAd(r['廣告名稱']);if(sp)spSet.add(sp);});
+  // 捐款這邊同樣只收「Meta + 選中活動」的列。
+  // ⚠ allDon 是三個來源混在一起的，Google（gsm_ot43_brand_action）與
+  //   LINE（TA04_OT01_lpv）的 utm_content 也含 OT 代號，不先篩就會把
+  //   Google 專用的 OT43~OT50 加進 Meta 的素材明細，變成一排全 0 的列。
+  const campsSel=cfg.filter(c=>selectedCamps.includes(c.label));
   allDon.forEach(r=>{
-    const uc=getUtmContent(r);const sp=parseSP(uc);if(!sp)return;
+    const p=String(r['來源參數']||'');
+    if(!p.includes('utm_source=facebook'))return;
+    if(!campsSel.some(c=>c.utmIds.some(id=>p.includes('utm_id='+id))))return;
+    const uc=getUtmContent(r);const sp=parseOT(uc);if(!sp)return;
     if(selectedTA&&parseTA(uc)!==selectedTA)return;
     spSet.add(sp);
   });
@@ -498,20 +540,21 @@ function buildCreativeTable(filtAd,allDon,selectedCamps,cfg,selectedTA){
   if(!sps.length)return'';
 
   const rows=sps.map(sp=>{
-    const ca=filtAdTA.filter(r=>selCampNames.includes(r['行銷活動名稱'])&&parseSPFromAd(r['廣告名稱'])===sp);
+    const ca=filtAdTA.filter(r=>selCampNames.includes(r['行銷活動名稱'])&&parseOTFromAd(r['廣告名稱'])===sp);
     const don=allDon.filter(r=>{
       if(!selectedCamps.length)return false;
       const p=String(r['來源參數']||'');
       if(!p.includes('utm_source=facebook'))return false;
       const inCamp=cfg.filter(c=>selectedCamps.includes(c.label)).some(c=>c.utmIds.some(id=>p.includes('utm_id='+id)));
       const uc=getUtmContent(r);
-      return inCamp&&parseSP(uc)===sp&&(selectedTA?parseTA(uc)===selectedTA:true);
+      return inCamp&&parseOT(uc)===sp&&(selectedTA?parseTA(uc)===selectedTA:true);
     });
     const spend=ca.reduce((s,r)=>s+(+r['花費金額 (TWD)']||0),0);
     const click=ca.reduce((s,r)=>s+(+r['連結點擊次數']||0),0);
     const atc=ca.reduce((s,r)=>s+(+r['加到購物車次數']||0),0);
     const purch=ca.reduce((s,r)=>s+(+r['購買次數']||0),0);
-    return{label:sp,...campStats(spend,click,atc,purch,don)};
+    const convv=ca.reduce((s,r)=>s+(+r['轉換價值']||0),0);
+    return{label:sp,...campStats(spend,click,atc,purch,don,convv)};
   });
   return buildCampTable(rows);
 }
@@ -679,7 +722,7 @@ function buildMediaSection(src,cfg,adRows,filtAd,allDon,filt,donFilter,campDonFi
       const campDaily=getCampDailyStats(filt,src,camp,(r,c)=>campDonFilter(r,c));
       html+=buildDailyTable(campDaily);
     });
-    // Google 限定：Pmax 與 Demandgen 的 TA/SP 捐款明細
+    // Google 限定：Pmax 與 Demandgen 的 TA/OT 捐款明細
     if(src==='google'){
       function buildTaSPTables(label,dons){
         if(!dons.length)return'';
@@ -694,10 +737,10 @@ function buildMediaSection(src,cfg,adRows,filtAd,allDon,filt,donFilter,campDonFi
           return`<tr${isTot?' class="tot"':''}><td class="rh"${isTot?' style="background:var(--color-background-secondary)"':''}>${r.label}</td><td>${fmt(r.donTotal)}</td><td>${fmt(r.donC5)}</td><td>$${fmt(r.donAmt)}</td><td>$${fmt(r.donA5)}</td></tr>`;
         }).join('');
         const spMap={};
-        dons.forEach(r=>{const sp=parseSP(getUtmContent(r));if(!sp)return;if(!spMap[sp])spMap[sp]=[];spMap[sp].push(r);});
+        dons.forEach(r=>{const sp=parseOT(getUtmContent(r));if(!sp)return;if(!spMap[sp])spMap[sp]=[];spMap[sp].push(r);});
         const spKeys=Object.keys(spMap).sort();
         const spRows=spKeys.map(sp=>{const m=calcM(spMap[sp].filter(validRow));return{label:sp,donTotal:m.total,donC5:m.c5,donAmt:m.amt,donA5:m.a5};});
-        const spTotAll=calcM(dons.filter(r=>validRow(r)&&parseSP(getUtmContent(r))));
+        const spTotAll=calcM(dons.filter(r=>validRow(r)&&parseOT(getUtmContent(r))));
         const spTotRow={label:'合計',donTotal:spTotAll.total,donC5:spTotAll.c5,donAmt:spTotAll.amt,donA5:spTotAll.a5};
         const spBody=[...spRows,spTotRow].map((r,i,arr)=>{
           const isTot=i===arr.length-1;
@@ -712,9 +755,9 @@ function buildMediaSection(src,cfg,adRows,filtAd,allDon,filt,donFilter,campDonFi
             </table></div>
           </div>
           ${spKeys.length?`<div>
-            <div class="daily-sep">${label} 實際捐款 × 素材（SP）</div>
+            <div class="daily-sep">${label} 實際捐款 × 素材（OT）</div>
             <div class="ad-wrap"><table class="ad-tbl">
-              <thead><tr><th class="rh">素材 (SP)</th><th>捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th></tr></thead>
+              <thead><tr><th class="rh">素材 (OT)</th><th>捐款數量</th><th>溫暖送餐數量</th><th>捐款總額</th><th>溫暖送餐總額</th></tr></thead>
               <tbody>${spBody}</tbody>
             </table></div>
           </div>`:''}
@@ -937,7 +980,7 @@ function loadXlsx(file){
     document.getElementById('sub-xlsx').textContent=file.name;document.getElementById('dz-xlsx').classList.add('loaded');buildDashboard();
   };r.readAsArrayBuffer(file);
 }
-function loadMetaCsv(file){Papa.parse(file,{header:true,skipEmptyLines:true,complete:res=>{metaAdRows=res.data;document.getElementById('sub-meta').textContent=file.name;document.getElementById('dz-meta').classList.add('loaded');buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();}});}
+function loadMetaCsv(file){Papa.parse(file,{header:true,skipEmptyLines:true,complete:res=>{metaAdRows=filterMetaRows(res.data);document.getElementById('sub-meta').textContent=file.name;document.getElementById('dz-meta').classList.add('loaded');buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();}});}
 function loadGooCsv(file){Papa.parse(file,{header:true,skipEmptyLines:true,beforeFirstChunk:chunk=>{const lines=chunk.split(/\r?\n/);return lines.slice(2).join('\n');},complete:res=>{gooAdRows=res.data;document.getElementById('sub-goo').textContent=file.name;document.getElementById('dz-goo').classList.add('loaded');buildDailyFromAllSources();updateDateRange();if(daily.length)renderTables();}});}
 
 const DON_SHEETS_ID='1Kq4KYLACd2vLqKn2huP-1f6PP3O1O4AOQ8AHdgRC4QE';
@@ -1228,7 +1271,25 @@ async function loadMetaFromAPI(){
     // ⚠ 一定要同時要 conversions / conversion_values：
     //   Meta 的 Donate（捐款）事件「不會」出現在 actions 裡，只會出現在 conversions 裡（key = donate_total）。
     //   只抓 actions 的話捐款次數與轉換價值會全部是 0。
-    const params=new URLSearchParams({fields:'campaign_name,adset_name,ad_name,spend,actions,action_values,conversions,conversion_values',level:'ad',time_increment:'1',time_range:JSON.stringify({since,until}),limit:'500',access_token:token});
+    // ⚠⚠ 一定要帶 ad.effective_status，而且要把「所有」狀態都列出來。
+    //   Meta 的廣告層級（level=ad）insights 預設只回傳「還存在」的廣告，
+    //   被刪除的廣告會整個消失——但 campaign / adset 層級仍然算得到它的花費。
+    //   2026-10-12 有 20 支 action_donate 的廣告被誤刪再重建，當下實測
+    //   （2026-09-22~10-13）：
+    //       campaign 層   $410,909
+    //       ad 層（預設）  $105,711   ← 少了 $305,198，而且不會報任何錯
+    //       ad 層（本設定）$410,909   ← 與 campaign 層完全吻合
+    //   捐款轉換掉得更誇張（10/11 顯示 1 筆、實際 92 筆）。
+    //   日後再有廣告被刪，這個設定會自動把資料接回來，不用再改程式。
+    const AD_STATUSES=['ACTIVE','PAUSED','DELETED','ARCHIVED','PENDING_REVIEW','DISAPPROVED',
+      'PREAPPROVED','PENDING_BILLING_INFO','CAMPAIGN_PAUSED','ADSET_PAUSED','IN_PROCESS','WITH_ISSUES'];
+    // campaign.name CONTAIN 是「字面子字串」比對，不會像 SQL LIKE 把 `_` 當萬用字元，
+    // 所以 'sp_dom_ot_2026' 不會撈到兒捐的 'sp_dom_2026'。
+    const filtering=JSON.stringify([
+      {field:'campaign.name',operator:'CONTAIN',value:PROJECT_TOKEN.replace(/^_/,'')},
+      {field:'ad.effective_status',operator:'IN',value:AD_STATUSES},
+    ]);
+    const params=new URLSearchParams({fields:'campaign_name,adset_name,ad_name,spend,actions,action_values,conversions,conversion_values',level:'ad',time_increment:'1',time_range:JSON.stringify({since,until}),filtering,limit:'500',access_token:token});
     let url=`https://graph.facebook.com/${META_API_VER}/${META_AD_ACCOUNT}/insights?${params}`;
     const allData=[];
     while(url){
@@ -1237,7 +1298,7 @@ async function loadMetaFromAPI(){
       if(json.data)allData.push(...json.data);
       url=json.paging?.next||null;
     }
-    metaAdRows=allData.map(row=>{
+    metaAdRows=filterMetaRows(allData.map(row=>{
       const acts={};(row.actions||[]).forEach(a=>{acts[a.action_type]=parseFloat(a.value)||0;});
       const avs={};(row.action_values||[]).forEach(a=>{avs[a.action_type]=parseFloat(a.value)||0;});
       const cvs={};(row.conversions||[]).forEach(a=>{cvs[a.action_type]=parseFloat(a.value)||0;});
@@ -1251,7 +1312,7 @@ async function loadMetaFromAPI(){
       const purchVal=avs['omni_purchase']||avs['purchase']||cvv['purchase_total']||0;
       const atcCnt=(acts['omni_add_to_cart']||acts['add_to_cart']||0)+(cvs['add_to_cart_total']||0);
       return{'分析報告開始':row.date_start,'行銷活動名稱':row.campaign_name,'廣告組合名稱':row.adset_name,'廣告名稱':row.ad_name,'花費金額 (TWD)':parseFloat(row.spend)||0,'連結點擊次數':acts['link_click']||0,'加到購物車次數':atcCnt,'購買次數':purchCnt+donateCnt,'轉換價值':purchVal+donateVal};
-    });
+    }));
     document.getElementById('sub-meta').textContent=`已從 Meta API 載入（${allData.length} 筆）`;
     document.getElementById('dz-meta').classList.add('loaded');
     if(st){st.textContent=`✓ ${allData.length} 筆資料`;st.style.color='#1D9E75';}
