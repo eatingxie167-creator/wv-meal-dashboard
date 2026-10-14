@@ -1,7 +1,7 @@
 Campaign Name,Day,Impressions,Clicks,Cost,加入購物車,聯絡人,註冊,購買,開始結帳,加入購物車 value,聯絡人 value,註冊 value,購買 value,開始結帳 value
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-09-22,180,15,201.440000,0,1,3.5,1,1,0,300,350,2000,500
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-09-23,350,28,423.730000,2,1,2.5,1,2,200,300,250,0,1000
-google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-09-24,276,23,327.010000,2,1,6,7,2.5,200,300,600,2000,1250
+google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-09-24,276,23,327.010000,2,1,7,7,2.5,200,300,700,2000,1250
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-09-25,92,12,190.440000,0,1,3,2,0,0,300,300,2000,0
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-09-26,53,4,34.100000,0,0,1,0,0,0,0,100,0,0
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-09-27,60,8,127.680000,0,0,1,3,2,0,0,100,2000,1000
@@ -21,7 +21,7 @@ google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-10-10,176,25,503.110000,4.9
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-10-11,154,32,585.210000,4,2,7.5,9,7,400,600,750,4500,3500
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-10-12,245,37,596.700000,3,1,8,6,5,300,300,800,0,2500
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-10-13,154,22,450.370000,1,0,2,0,0,100,0,200,0,0
-google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-10-14,16,0,0.000000,0,0,0,0,0,0,0,0,0,0
+google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_brand,2026-10-14,36,2,49.400000,0,0,0,0,0,0,0,0,0,0
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_competitor,2026-09-22,189,4,106.240000,0,0,0,0,0,0,0,0,0,0
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_competitor,2026-09-23,253,5,140.870000,0,0,1,0,0,0,0,100,0,0
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_competitor,2026-09-24,308,8,246.080402,0,0,1,0,0,0,0,100,0,0
@@ -67,7 +67,7 @@ google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_generic,2026-10-10,868,26,786.680000,6
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_generic,2026-10-11,1556,52,1456.770000,5,3,6.5,4,4,500,900,650,0,2000
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_generic,2026-10-12,2003,63,1727.950000,3,0,4,0,0,300,0,400,0,0
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_generic,2026-10-13,1692,54,1565.738542,2,1,2,1,1,200,300,200,5000,500
-google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_generic,2026-10-14,219,7,195.030000,0,0,0,0,0,0,0,0,0,0
+google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_generic,2026-10-14,699,21,641.460000,1,1,2,2,1,100,300,200,300,500
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_product,2026-09-22,1,0,0.000000,0,0,0,0,0,0,0,0,0,0
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_product,2026-09-23,2,2,19.320000,0,0,0,0,0,0,0,0,0,0
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_product,2026-09-24,9,0,0.000000,0,0,0,0,0,0,0,0,0,0
@@ -90,7 +90,7 @@ google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_product,2026-10-10,479,21,664.220000,2
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_product,2026-10-11,676,25,839.240000,4,0,5,1,1,400,0,500,0,500
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_product,2026-10-12,1012,33,1079.310000,3,2,4,3,2,300,600,400,3000,1000
 google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_product,2026-10-13,943,31,1102.960000,3,0,3,0,1,300,0,300,0,500
-google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_product,2026-10-14,137,3,71.300000,0,0,0,0,0,0,0,0,0,0
+google_ads_cpc_gsm_sp_dom_ot_2026_Sep_ccf_product,2026-10-14,412,13,424.150000,0,0,0,0,0,0,0,0,0,0
 google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-09-22,34488,331,850.932086,4,1,6,4,4,400,300,600,8000,2000
 google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-09-23,76005,614,2219.074666,13,0,12.9988,5,8,1300,0,1299.88,10000,4000
 google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-09-24,50072,463,1582.676068,6,2,11,11,12,600,600,1100,22000,6000
@@ -111,9 +111,9 @@ google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-08,162395,1983,4174.737095,11.
 google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-09,98176,1146,2715.470774,3,0,8,0,0,300,0,800,0,0
 google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-10,74960,868,2096.652030,4,0,8,6,6,400,0,800,2000,3000
 google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-11,75671,824,2088.948341,6,0,4,0,0,600,0,400,0,0
-google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-12,42788,416,1060.818111,2,0,1,0,0,200,0,100,0,0
-google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-13,54094,436,1057.516147,3,0,2,0,0,300,0,200,0,0
-google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-14,5751,59,147.834834,0,0,0,0,0,0,0,0,0,0
+google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-12,42787,416,1060.815421,2,0,1,0,0,200,0,100,0,0
+google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-13,54092,436,1057.363771,3,0,2,0,0,300,0,200,0,0
+google_ads_dgc_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-14,15690,169,428.418856,1,0,0,0,0,100,0,0,0,0
 google_ads_pmax_sp_dom_ot_2026_Sep_ccf_cpa,2026-09-22,81359,376,4967.508296,5,2,9,2,2,500,600,900,4000,1000
 google_ads_pmax_sp_dom_ot_2026_Sep_ccf_cpa,2026-09-23,49715,566,5350.430940,17.9966,3,23.9652,10,11,1799.66,900,2396.52,15000,5500
 google_ads_pmax_sp_dom_ot_2026_Sep_ccf_cpa,2026-09-24,111721,796,5174.598027,19.0233,3,16.9989,2,1,1902.33,900,1699.89,2000,500
@@ -134,4 +134,4 @@ google_ads_pmax_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-08,115016,1592,5615.953025,8,
 google_ads_pmax_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-09,120575,1453,5601.097317,16,0,15.9974,1,0,1600,0,1599.74,0,0
 google_ads_pmax_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-10,40011,580,3008.585443,6.99905,1,7,1,0,699.905,300,700,0,0
 google_ads_pmax_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-11,45409,653,3221.239569,5.99681,0,10.9981,1,1,599.681,0,1099.81,0,500
-google_ads_pmax_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-12,26049,377,1980.685823,4,0,5,0,0,400,0,500,0,0
+google_ads_pmax_sp_dom_ot_2026_Sep_ccf_cpa,2026-10-12,26050,377,1980.685823,4,0,5,0,0,400,0,500,0,0
