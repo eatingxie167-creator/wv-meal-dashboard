@@ -224,7 +224,61 @@ function calcM(rows){
 }
 function filtDaily(){const{from,to}=getRange();return daily.filter(d=>d.isoDate>=from&&d.isoDate<=to);}
 
-function matchMeta(row,camp){const p=String(row['來源參數']||'');if(!p.includes('utm_source=facebook'))return false;return camp.utmIds.some(id=>p.includes('utm_id='+id));}
+// ── Meta 捐款歸因：utm_id 不是每次都會帶 ──────────────────────────────
+// Meta 的 utm_id 是平台動態參數（{{campaign.id}}），只有部分版位會帶上。
+// 本波實測（2026-09-22~10-18）：514 筆 facebook 捐款裡有 156 筆完全沒有 utm_id，
+// 其中 104 筆是溫暖送餐、金額 $463,388。
+// 原本「活動一定要對到 utm_id」的寫法會讓這 156 筆在「分活動每日明細／受眾明細／
+// 素材明細」三張表裡直接消失，所以那三張表的合計一直比「每日明細」和「總覽」少。
+//
+// 補救順序（只在「唯一對應」時才歸因，絕不按比例分攤）：
+//   1. utm_id 對得上某個活動 → 直接用。
+//   2. 沒有 utm_id → 拿 utm_content 的 TA×OT 去查廣告報表，只有當這組 TA×OT
+//      在整個帳號只出現在一個活動時才歸給它（本波 20 組只有 8 組唯一，
+//      都是 TA4/TA5 → Action Donate，可救回 30 筆）。
+//   3. 還是判不出來（本波 126 筆）→ 只在「全部活動都選取」時計入：那時
+//      「選取的活動」等於整個 Meta，算進聯集並不等於猜是哪一支活動；
+//      選了部分活動時排除，並在表下方用文字交代被排除幾筆。
+// ⚠ 兒捐那份儀表板是用 wvt_ct 前綴補救的，這裡不能照抄：送餐四個活動的
+//   wvt_ct 全都是 fb_paid_post_sp_dom_ot_2026_Sep_ccf（共用前綴），分不出來。
+function isFbRow(row){return String(row['來源參數']||'').includes('utm_source=facebook');}
+let _taOtMap=null,_taOtSrc=null,_taOtCfg=null;
+// TA×OT -> 活動 label，只保留「只對應到一個活動」的組合。
+function metaTaOtCampMap(){
+  if(_taOtMap&&_taOtSrc===metaAdRows&&_taOtCfg===CONFIG.meta)return _taOtMap;
+  const acc={};
+  (metaAdRows||[]).forEach(r=>{
+    const ta=parseTAFromAdset(r['廣告組合名稱']),ot=parseOTFromAd(r['廣告名稱']);
+    if(!ta||!ot)return;
+    const camp=CONFIG.meta.find(c=>(c.campNames||[]).includes(r['行銷活動名稱']));
+    if(!camp)return;
+    const k=ta+'|'+ot;(acc[k]=acc[k]||new Set()).add(camp.label);
+  });
+  const out={};
+  Object.keys(acc).forEach(k=>{if(acc[k].size===1)out[k]=[...acc[k]][0];});
+  _taOtMap=out;_taOtSrc=metaAdRows;_taOtCfg=CONFIG.meta;
+  return out;
+}
+// 回傳這筆捐款屬於哪個活動；null = 判不出來（不猜）。
+function metaCampLabel(row){
+  const p=String(row['來源參數']||'');
+  const byId=CONFIG.meta.find(c=>(c.utmIds||[]).some(id=>p.includes('utm_id='+id)));
+  if(byId)return byId.label;
+  const uc=getUtmContent(row),ta=parseTA(uc),ot=parseOT(uc);
+  if(!ta||!ot)return null;
+  return metaTaOtCampMap()[ta+'|'+ot]||null;
+}
+function matchMeta(row,camp){return isFbRow(row)&&metaCampLabel(row)===camp.label;}
+// 分活動每日明細／受眾／素材共用：selectedCamps 是目前勾選的活動 label。
+function matchMetaScope(row,selectedCamps,cfg){
+  if(!isFbRow(row))return false;
+  if(!selectedCamps||!selectedCamps.length)return false;
+  const lb=metaCampLabel(row);
+  if(lb)return selectedCamps.includes(lb);
+  return (cfg||CONFIG.meta).every(c=>selectedCamps.includes(c.label));
+}
+// 目前區間內「連 TA×OT 都判不出活動」的 facebook 捐款，用來在表下方說明。
+function metaUndetermined(rows){return (rows||[]).filter(r=>isFbRow(r)&&!metaCampLabel(r));}
 function matchGoogle(row,camp){const p=String(row['來源參數']||'');if(!p.includes('utm_source=google'))return false;const m=p.match(/utm_content=([^&]*)/);if(!m)return false;const c=m[1].toLowerCase();return camp.utmContents.some(kw=>c.includes(kw.toLowerCase()));}
 function matchLine(row){return String(row['來源參數']||'').includes('utm_source=line');}
 
@@ -495,13 +549,7 @@ function buildAudienceTable(filtAd,allDon,selectedCamps,cfg){
 
   const rows=tas.map(ta=>{
     const ca=filtAd.filter(r=>selCampNames.includes(r['行銷活動名稱'])&&parseTAFromAdset(r['廣告組合名稱'])===ta);
-    const don=allDon.filter(r=>{
-      if(!selectedCamps.length)return false;
-      const p=String(r['來源參數']||'');
-      if(!p.includes('utm_source=facebook'))return false;
-      const inCamp=cfg.filter(c=>selectedCamps.includes(c.label)).some(c=>c.utmIds.some(id=>p.includes('utm_id='+id)));
-      return inCamp&&parseTA(getUtmContent(r))===ta;
-    });
+    const don=allDon.filter(r=>matchMetaScope(r,selectedCamps,cfg)&&parseTA(getUtmContent(r))===ta);
     const spend=ca.reduce((s,r)=>s+(+r['花費金額 (TWD)']||0),0);
     const click=ca.reduce((s,r)=>s+(+r['連結點擊次數']||0),0);
     const atc=ca.reduce((s,r)=>s+(+r['加到購物車次數']||0),0);
@@ -527,11 +575,8 @@ function buildCreativeTable(filtAd,allDon,selectedCamps,cfg,selectedTA){
   // ⚠ allDon 是三個來源混在一起的，Google（gsm_ot43_brand_action）與
   //   LINE（TA04_OT01_lpv）的 utm_content 也含 OT 代號，不先篩就會把
   //   Google 專用的 OT43~OT50 加進 Meta 的素材明細，變成一排全 0 的列。
-  const campsSel=cfg.filter(c=>selectedCamps.includes(c.label));
   allDon.forEach(r=>{
-    const p=String(r['來源參數']||'');
-    if(!p.includes('utm_source=facebook'))return;
-    if(!campsSel.some(c=>c.utmIds.some(id=>p.includes('utm_id='+id))))return;
+    if(!matchMetaScope(r,selectedCamps,cfg))return;
     const uc=getUtmContent(r);const sp=parseOT(uc);if(!sp)return;
     if(selectedTA&&parseTA(uc)!==selectedTA)return;
     spSet.add(sp);
@@ -542,12 +587,9 @@ function buildCreativeTable(filtAd,allDon,selectedCamps,cfg,selectedTA){
   const rows=sps.map(sp=>{
     const ca=filtAdTA.filter(r=>selCampNames.includes(r['行銷活動名稱'])&&parseOTFromAd(r['廣告名稱'])===sp);
     const don=allDon.filter(r=>{
-      if(!selectedCamps.length)return false;
-      const p=String(r['來源參數']||'');
-      if(!p.includes('utm_source=facebook'))return false;
-      const inCamp=cfg.filter(c=>selectedCamps.includes(c.label)).some(c=>c.utmIds.some(id=>p.includes('utm_id='+id)));
+      if(!matchMetaScope(r,selectedCamps,cfg))return false;
       const uc=getUtmContent(r);
-      return inCamp&&parseOT(uc)===sp&&(selectedTA?parseTA(uc)===selectedTA:true);
+      return parseOT(uc)===sp&&(selectedTA?parseTA(uc)===selectedTA:true);
     });
     const spend=ca.reduce((s,r)=>s+(+r['花費金額 (TWD)']||0),0);
     const click=ca.reduce((s,r)=>s+(+r['連結點擊次數']||0),0);
@@ -564,11 +606,7 @@ function buildSelectedCampDaily(filt,filtAd,allDon,selectedCamps,cfg){
   const selCampNames=cfg.filter(c=>selectedCamps.includes(c.label)).flatMap(c=>c.campNames);
   return filt.map(d=>{
     const ca=filtAd.filter(r=>selCampNames.includes(r['行銷活動名稱'])&&r['分析報告開始']===d.isoDate);
-    const don=d.allRows.filter(r=>{
-      const p=String(r['來源參數']||'');
-      if(!p.includes('utm_source=facebook'))return false;
-      return cfg.filter(c=>selectedCamps.includes(c.label)).some(c=>c.utmIds.some(id=>p.includes('utm_id='+id)));
-    });
+    const don=d.allRows.filter(r=>matchMetaScope(r,selectedCamps,cfg));
     const spend=ca.reduce((s,r)=>s+(+r['花費金額 (TWD)']||0),0);
     const click=ca.reduce((s,r)=>s+(+r['連結點擊次數']||0),0);
     const atc=ca.reduce((s,r)=>s+(+r['加到購物車次數']||0),0);
@@ -601,9 +639,26 @@ function renderMetaDetail(){
   const tagEl=document.getElementById('meta-sel-tags');
   if(tagEl)tagEl.innerHTML=sel.map(s=>`<span class="sel-tag">${s}</span>`).join('');
 
+  // 判不出活動的捐款：全選時已含在下面三張表裡，只選部分活動時被排除，
+  // 兩種情況都要講清楚，不然使用者又會問「為什麼跟上面的數字不一樣」。
+  const undet=metaUndetermined(allDon).filter(validRow);
+  const allSel=cfg.every(c=>sel.includes(c.label));
+  let undetNote='';
+  if(undet.length){
+    const m=calcM(undet);
+    undetNote=`<p style="font-size:12px;color:var(--color-text-secondary);padding:.35rem 0 .1rem;line-height:1.6">
+      <i class="ti ti-info-circle" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>
+      區間內有 <b>${fmt(m.total)}</b> 筆捐款（溫暖送餐 ${fmt(m.c5)} 筆／$${fmt(m.a5)}）來自 Facebook 但沒有帶 utm_id，
+      TA×OT 也同時出現在多個活動、無法判定是哪一支${allSel
+        ?'；因為目前「全部活動」都選取，它們已計入下面三張表（合計才會跟「每日明細」對得起來），但無法再往下分到單一活動。'
+        :'。目前只選了部分活動，這些筆數<b>未</b>計入下面三張表，所以合計會小於「每日明細」。'}
+    </p>`;
+  }
+
   let html='';
   // 每日明細（選中活動合併）
   html+=`<div class="daily-sep">分活動每日明細</div>`;
+  html+=undetNote;
   const selDaily=buildSelectedCampDaily(filt,filtAd,allDon,sel,cfg);
   html+=buildDailyTable(selDaily);
   // 受眾明細
@@ -671,13 +726,11 @@ function aggCampStats(src,camp,filtAd,allDonRows,campDonFilter){
 //   （已用 Graph API 比對：190 組 utm_content 裡有 74 組對應到多個活動），
 //   所以無法從 utm_content 反推是哪個活動。這裡不猜測歸屬、單獨列一行，
 //   活動表合計才會跟「每日明細」和「總覽」對得起來（否則會少算）。
+//   （2026-10-19 起：已先用 TA×OT 唯一性救回一部分，見 metaCampLabel()；
+//     這一列只留真正判不出來的，所以會比以前短。）
 function addMetaUnmatchedRow(src,cfg,campRows,allDon,prevAllDon){
   if(src!=='meta')return;
-  const noId=rows=>(rows||[]).filter(r=>{
-    const p=String(r['來源參數']||'');
-    if(!p.includes('utm_source=facebook'))return false;
-    return !cfg.some(c=>(c.utmIds||[]).some(id=>p.includes('utm_id='+id)));
-  });
+  const noId=rows=>metaUndetermined(rows);
   const un=noId(allDon);
   if(!un.length)return;
   const prevUn=noId(prevAllDon);
