@@ -33,7 +33,10 @@ OUT_PATH = os.path.join(HERE, "google_daily.csv")
 
 CUSTOMER_ID = "9438435772"
 LOGIN_CUSTOMER_ID = "1909930701"
-API_VERSION = "v22"
+# ⚠ Google 大約每兩個月停用一個舊版本，停用後直接回 400 UNSUPPORTED_VERSION，
+#   launchd 的自動更新會安靜地失敗（只有 log 看得到），儀表板就一路吃舊 CSV。
+#   已停用：v21（2026-08）、v22（2026-10-20 實測已被擋）。
+API_VERSION = "v25"
 # 本波起始日。wv_daily 從 6/01 一路累積，但這支只輸出本波，
 # 免得上一波（兒童月捐）的花費混進 ROAS 分母。
 START_DATE = "2026-09-22"
